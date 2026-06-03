@@ -1,0 +1,89 @@
+# ============================================
+# AKASIA v1.0 - .gitignore
+# ============================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+!rag-app/lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables
+.env
+.env.local
+
+# CATATAN: faiss_index/ dan documents_metadata.json TIDAK di-ignore
+# agar dosen bisa langsung testing tanpa perlu index ulang
+
+# ChromaDB
+chroma_db/
+
+# Streamlit
+.streamlit/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+tmp/
+
+# Logs
+*.log
+logs/
+
+# Uploaded files
+uploads/
+
+# Node.js (Frontend)
+node_modules/
+.next/
+.turbo/
+*.tsbuildinfo
+next-env.d.ts
+
+# Package locks - keep in repo for reproducibility
+# package-lock.json
+
+# Testing
+coverage/
+.nyc_output/
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
