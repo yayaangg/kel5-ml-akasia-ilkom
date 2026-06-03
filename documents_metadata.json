@@ -15,8 +15,78 @@
       "uploaded_at": "2026-06-03T23:19:47.546599",
       "status": "indexed",
       "chunks_count": 259
+    },
+    {
+      "id": "cff7080b-3a50-4138-99bf-3ad4157eb1fd",
+      "filename": "03_paduan-penyusunan-skripsi-fmipa.pdf",
+      "size_bytes": 2609770,
+      "uploaded_at": "2026-06-04T04:14:06.691653",
+      "status": "indexed",
+      "chunks_count": 128
     }
   ],
-  "total_queries": 0,
-  "last_query_at": null
+  "total_queries": 15,
+  "last_query_at": "2026-06-04T04:23:12.542088",
+  "query_history": [
+    {
+      "query": "Apa syarat kelulusan cum laude?",
+      "timestamp": "2026-06-04T03:09:19.364504"
+    },
+    {
+      "query": "kapan uts?",
+      "timestamp": "2026-06-04T03:14:24.385810"
+    },
+    {
+      "query": "Apa syarat magang/KKN?",
+      "timestamp": "2026-06-04T03:16:33.553084"
+    },
+    {
+      "query": "Berapa lama maksimal cuti akademik?",
+      "timestamp": "2026-06-04T03:19:19.376033"
+    },
+    {
+      "query": "Apa saja syarat mengajukan cuti?",
+      "timestamp": "2026-06-04T03:21:58.121686"
+    },
+    {
+      "query": "Berapa lama maksimal cuti akademik?",
+      "timestamp": "2026-06-04T03:35:38.261896"
+    },
+    {
+      "query": "Bagaimana prosedur aktivasi setelah cuti?",
+      "timestamp": "2026-06-04T03:35:53.265198"
+    },
+    {
+      "query": "Apa saja syarat mengajukan cuti?",
+      "timestamp": "2026-06-04T03:36:24.605524"
+    },
+    {
+      "query": "Apa syarat mengikuti ujian skripsi?",
+      "timestamp": "2026-06-04T03:47:23.040132"
+    },
+    {
+      "query": "Apa syarat magang/KKN?",
+      "timestamp": "2026-06-04T03:48:22.450138"
+    },
+    {
+      "query": "kapan uts?",
+      "timestamp": "2026-06-04T03:49:30.529517"
+    },
+    {
+      "query": "kapan ujian tengah semester?",
+      "timestamp": "2026-06-04T03:51:51.554102"
+    },
+    {
+      "query": "kapan uts semester genap?",
+      "timestamp": "2026-06-04T04:00:29.340364"
+    },
+    {
+      "query": "bagaimana syarat pengajuan judul?",
+      "timestamp": "2026-06-04T04:17:31.329390"
+    },
+    {
+      "query": "apa saja sistematika penulisan proposal penelitian?",
+      "timestamp": "2026-06-04T04:23:12.542088"
+    }
+  ]
 }
