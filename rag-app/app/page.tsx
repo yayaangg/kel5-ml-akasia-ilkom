@@ -17,14 +17,30 @@ import {
 
 // Neural Network Animation Background
 function NeuralBackground() {
-    const nodes = React.useMemo(() =>
-        Array.from({ length: 20 }, (_, i) => ({
-            id: i,
-            x: Math.random() * 100,
-            y: Math.random() * 100,
-            size: Math.random() * 4 + 2,
-            delay: Math.random() * 2
-        })), [])
+    const [mounted, setMounted] = React.useState(false)
+    const [nodes, setNodes] = React.useState<Array<{id: number, x: number, y: number, size: number, delay: number, duration: number}>>([])
+
+    React.useEffect(() => {
+        setNodes(
+            Array.from({ length: 20 }, (_, i) => ({
+                id: i,
+                x: Math.random() * 100,
+                y: Math.random() * 100,
+                size: Math.random() * 4 + 2,
+                delay: Math.random() * 2,
+                duration: 2 + Math.random()
+            }))
+        )
+        setMounted(true)
+    }, [])
+
+    if (!mounted) {
+        return (
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                <svg className="w-full h-full opacity-20" />
+            </div>
+        )
+    }
 
     return (
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -79,7 +95,7 @@ function NeuralBackground() {
                             opacity: [0.5, 1, 0.5]
                         }}
                         transition={{
-                            duration: 2 + Math.random(),
+                            duration: node.duration,
                             delay: node.delay,
                             repeat: Infinity,
                             ease: "easeInOut"
@@ -90,6 +106,7 @@ function NeuralBackground() {
         </div>
     )
 }
+
 
 // Floating AI Icons
 function FloatingIcons() {
