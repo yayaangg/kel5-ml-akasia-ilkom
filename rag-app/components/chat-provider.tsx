@@ -141,7 +141,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         setIsTyping(true)
 
         try {
-            // v2.5: Build conversation history for context
+            // Build conversation history for context
             const room = rooms.find(r => r.id === roomId)
             const historyMessages = room?.messages.slice(-6).map(m => ({
                 role: m.role,

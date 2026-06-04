@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * FeedbackDashboard Component - AKASIA v2.3
+ * FeedbackDashboard Component - AKASIA
  * Menampilkan statistik feedback dan recent ratings
  */
 

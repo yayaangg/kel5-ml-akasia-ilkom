@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * ChatBubble Component - AKASIA v2.2
+ * ChatBubble Component - AKASIA
  * Komponen gelembung chat dengan:
  * - Confidence Badge
  * - Feedback Buttons (👍/👎)
@@ -253,7 +253,7 @@ export function ChatBubble({
                         </AnimatePresence>
                     </motion.div>
 
-                    {/* Confidence Badge (v2.1) */}
+                    {/* Confidence Badge () */}
                     {isAI && confidence !== undefined && !isTyping && (
                         <div className="flex items-center gap-2 ml-1">
                             <ConfidenceBadge confidence={confidence} />
@@ -290,7 +290,7 @@ export function ChatBubble({
                         </motion.div>
                     )}
 
-                    {/* v2.2: Feedback Buttons */}
+                    {/*: Feedback Buttons */}
                     {isAI && content && !isTyping && onFeedback && (
                         <motion.div
                             initial={{ opacity: 0 }}
@@ -324,7 +324,7 @@ export function ChatBubble({
                         </motion.div>
                     )}
 
-                    {/* v2.2: Related Questions */}
+                    {/*: Related Questions */}
                     {isAI && relatedQuestions && relatedQuestions.length > 0 && !isTyping && onQuestionClick && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}

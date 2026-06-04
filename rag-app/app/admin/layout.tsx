@@ -27,7 +27,7 @@ export default function AdminLayout({
                 <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
                     Admin Panel
                 </h1>
-                <p className="text-xs text-slate-400 mt-1">UHO.AI Control Center</p>
+                <p className="text-xs text-slate-400 mt-1">ILKOM.AI Control Center</p>
             </div>
 
             <div className="flex-1 px-4 py-2 space-y-2">

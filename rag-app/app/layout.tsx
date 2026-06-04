@@ -13,8 +13,8 @@ const fontMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AKASIA v2.4 - Asisten Akademik UHO",
-  description: "Asisten Akademik Berbasis AI untuk Universitas Halu Oleo",
+  title: "AKASIA - Asisten Akademik ILKOM",
+  description: "Asisten Akademik Berbasis AI untuk Jurusan Ilmu Komputer",
 };
 
 import { ChatProvider } from "@/components/chat-provider";

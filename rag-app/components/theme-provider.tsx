@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * ThemeProvider - AKASIA v2.4
+ * ThemeProvider - AKASIA
  * Dark/Light mode toggle dengan persistence
  */
 

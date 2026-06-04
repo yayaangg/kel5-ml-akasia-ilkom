@@ -1,10 +1,10 @@
 """
 ============================================
-AKASIA v2.1 - RAG Engine
+AKASIA - RAG Engine
 ============================================
 Retrieval-Augmented Generation Engine
 
-Fitur v2.1:
+Fitur:
 - Hybrid Search: FAISS semantic + BM25 keyword
 - Cross-Encoder Re-ranking: Neural relevance scoring
 - Confidence Scoring: Tampilkan keyakinan jawaban
@@ -307,7 +307,7 @@ class RAGEngine:
         return [(r['doc'], 1 - r['hybrid_score'], 'hybrid') for r in all_results[:k]]
     
     # ========================================
-    # v2.1: Confidence Scoring
+    #: Confidence Scoring
     # ========================================
     
     def _calculate_confidence(self, query, retrieved_docs, cross_encoder_scores=None):
@@ -606,7 +606,7 @@ class RAGEngine:
             # Preprocess text
             text = self._preprocess_text(text)
             
-            # v2.0: Pasal-aware semantic chunking
+            #: Pasal-aware semantic chunking
             chunks = self._pasal_aware_chunking(text, filename)
             
             # Process chunks with rich metadata
@@ -643,7 +643,7 @@ class RAGEngine:
     
     def _pasal_aware_chunking(self, text, filename):
         """
-        v2.0: Chunking yang menjaga setiap Pasal tetap utuh.
+        Chunking yang menjaga setiap Pasal tetap utuh.
         Untuk dokumen peraturan, setiap Pasal menjadi 1 chunk.
         Untuk dokumen lain, gunakan semantic chunking.
         """
@@ -853,12 +853,12 @@ class RAGEngine:
 
     def query_stream(self, question, history=None):
         """
-        v2.5: Enhanced RAG query dengan:
+       Enhanced RAG query dengan:
         - Hybrid Search (Semantic + BM25)
         - Cross-Encoder Neural Re-ranking
         - Confidence Scoring
         - Anti-hallucination prompting
-        - Conversation Memory (v2.5)
+        - Conversation Memory ()
         """
         self.refresh_vectorstore()
         
@@ -872,7 +872,7 @@ class RAGEngine:
         question_expanded = self._apply_synonym_mapping(question)
         
         # ========================================
-        # v2.3: Check Response Cache
+        # Check Response Cache
         # ========================================
         import hashlib
         from time import time
@@ -900,7 +900,7 @@ class RAGEngine:
         self.cache_stats["misses"] += 1
         
         # ========================================
-        # STAGE 1: v2.6 Multi-Query Retrieval
+        # STAGE 1: Multi-Query Retrieval
         # ========================================
         try:
             hybrid_results = self._multi_query_retrieval(question, k=50, alpha=0.7)
@@ -954,7 +954,7 @@ class RAGEngine:
         # ========================================
         # STAGE 5: Enhanced Anti-Hallucination Prompt
         # ========================================
-        system_prompt = """Anda adalah AKASIA, Asisten Akademik ramah untuk Universitas Halu Oleo.
+        system_prompt = """Anda adalah AKASIA, Asisten Akademik ramah untuk Jurusan Ilmu Komputer.
 Anda berbicara dengan sopan dan membantu seperti Customer Service yang baik.
 
 TUGAS UTAMA:
@@ -994,8 +994,8 @@ Gunakan respons yang ramah seperti:
 "Mohon maaf, saya belum memiliki informasi mengenai [topik] saat ini. 🙏
 
 Saran untuk Anda:
-• Hubungi Bagian Akademik UHO di jam kerja
-• Kunjungi website resmi UHO: uho.ac.id
+• Hubungi Bagian Akademik ILKOM di jam kerja
+• Kunjungi website resmi ILKOM: fmipa.uho.ac.id/ilmukomputer
 • Tanyakan ke Jurusan/Program Studi Anda
 
 Apakah ada pertanyaan lain yang bisa saya bantu?"
@@ -1006,7 +1006,7 @@ PENTING:
 - Jangan gunakan istilah teknis seperti "REFERENSI" atau "dokumen"
 - Bersikaplah seperti teman yang membantu"""
 
-        prompt = f"""INFORMASI AKADEMIK UHO:
+        prompt = f"""INFORMASI AKADEMIK ILKOM:
 {context}
 
 ---
@@ -1014,7 +1014,7 @@ PERTANYAAN MAHASISWA: {question}
 
 Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yang relevan, berikan jawaban yang jelas. Jika tidak ada, berikan respons ramah dengan saran yang membantu."""
 
-# v2.5: Build messages with conversation history
+# Build messages with conversation history
         messages = [{"role": "system", "content": system_prompt}]
         
         # Include conversation history for context (max 6 turns)
@@ -1037,12 +1037,12 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
                     full_response += content
                     yield {"response": content}
             
-            # v2.2: Generate related questions after response
+            # Generate related questions after response
             related = self._generate_related_questions(question, reranked_docs)
             if related:
                 yield {"related_questions": related}
             
-            # v2.3: Save to cache
+            # Save to cache
             # Evict oldest if cache full
             if len(self.response_cache) >= self.cache_max_size:
                 oldest_key = min(self.response_cache, key=lambda k: self.response_cache[k]["timestamp"])
@@ -1061,7 +1061,7 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
     
     def _generate_related_questions(self, question, docs, max_questions=4):
         """
-        v2.2: Generate related questions based on current query and documents.
+        Generate related questions based on current query and documents.
         Uses keywords and document topics to suggest follow-up questions.
         """
         question_lower = question.lower()
@@ -1134,7 +1134,7 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
     
     def _rerank_documents(self, question, docs):
         """
-        v2.0: Re-rank documents based on relevance signals
+        Re-rank documents based on relevance signals
         Uses keyword overlap and position weighting
         """
         question_lower = question.lower()
@@ -1174,7 +1174,7 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
 
     def _apply_synonym_mapping(self, question):
         """
-        v2.6: Expand abbreviations dan istilah untuk retrieval lebih baik.
+        Expand abbreviations dan istilah untuk retrieval lebih baik.
         Menambahkan variasi kata kunci untuk meningkatkan kemungkinan match.
         """
         # Direct replacements
@@ -1199,7 +1199,7 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
             r'\bcuti\b': 'cuti akademik izin tidak aktif',
             r'\bwisuda\b': 'wisuda kelulusan yudisium',
             r'\blulus\b': 'lulus kelulusan yudisium predikat',
-            # v2.6: Calendar/semester terms
+            #: Calendar/semester terms
             r'\bgasal\b': 'gasal ganjil semester I',
             r'\bgenap\b': 'genap semester II',
             r'\bongoing\b': 'ongoing mahasiswa lama aktif',
@@ -1225,7 +1225,7 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
             additions.append('indeks prestasi huruf mutu')
         if 'jadwal' in q_lower or 'kapan' in q_lower:
             additions.append('tanggal kalender akademik jadwal')
-        # v2.6: Payment-related additions
+        # Payment-related additions
         if 'pembayaran' in q_lower or 'bayar' in q_lower or 'ukt' in q_lower or 'spp' in q_lower:
             additions.append('registrasi mahasiswa ongoing')
             
@@ -1246,12 +1246,12 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
         return [w for w in words if w not in stopwords and len(w) > 2]
 
     # ========================================
-    # v2.6: Multi-Query Retrieval for Higher Accuracy
+    # Multi-Query Retrieval for Higher Accuracy
     # ========================================
     
     def _generate_query_variations(self, question):
         """
-        v2.6: Generate multiple query variations for better retrieval.
+        Generate multiple query variations for better retrieval.
         Returns 3 variations: original expanded, rephrased, keyword-focused.
         """
         variations = []
@@ -1304,7 +1304,7 @@ Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yan
     
     def _multi_query_retrieval(self, question, k=30, alpha=0.7):
         """
-        v2.6: Retrieve documents using multiple query variations.
+        Retrieve documents using multiple query variations.
         Merges results from all variations and deduplicates.
         """
         query_variations = self._generate_query_variations(question)

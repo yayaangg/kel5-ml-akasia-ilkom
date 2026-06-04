@@ -46,7 +46,7 @@ export function Sidebar() {
                 <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400">
                     AKASIA
                 </h1>
-                <p className="text-xs text-slate-400 mt-1">Asisten Akademik v2.4</p>
+                <p className="text-xs text-slate-400 mt-1">Asisten Akademik</p>
             </div>
 
             <div className="flex-1 px-4 py-2 space-y-2 overflow-y-auto">
@@ -99,7 +99,7 @@ export function Sidebar() {
             <div className="p-4 space-y-3 border-t border-white/10">
                 <ThemeToggle />
                 <p className="text-xs text-slate-500 text-center">
-                    AKASIA v2.4 © UHO 2025
+                    AKASIA © ILKOM 2025
                 </p>
             </div>
         </>

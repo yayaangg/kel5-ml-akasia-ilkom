@@ -82,7 +82,7 @@ cd rag-app && npm install && npm run dev
 
 **Akses:** http://localhost:3000
 
-> ✅ **Catatan:** Knowledge base sudah ter-index (2 dokumen akademik UHO).
+> ✅ **Catatan:** Knowledge base sudah ter-index (3 dokumen akademik ILKOM).
 > API key demo sudah tersedia di `.env.example`.
 
 ---

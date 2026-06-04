@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * Home Page - AKASIA v2.0
+ * Home Page - AKASIA
  * Halaman utama chat dengan animasi modern
  */
 
@@ -117,7 +117,7 @@ export default function Home() {
                   AKASIA
                 </h1>
                 <p className="text-slate-400 text-sm sm:text-lg max-w-lg leading-relaxed">
-                  Asisten Akademik AI untuk Universitas Halu Oleo
+                  Asisten Akademik AI untuk Jurusan Ilmu Komputer
                 </p>
                 <p className="text-slate-500 text-xs sm:text-sm">
                   Tanyakan seputar peraturan akademik, kalender, dan informasi kampus
@@ -171,7 +171,7 @@ export default function Home() {
                   AKASIA
                 </h1>
                 <p className="text-slate-500 text-xs">
-                  Asisten Akademik v2.2
+                  Asisten Akademik
                 </p>
               </motion.div>
 

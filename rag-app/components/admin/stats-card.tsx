@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * StatsCard Component - AKASIA v2.5 (Fixed Grid Height & Counter)
+ * StatsCard Component - AKASIA (Fixed Grid Height & Counter)
  * Kartu statistik dengan animasi counter dan penyesuaian tinggi layout seragam
  */
 

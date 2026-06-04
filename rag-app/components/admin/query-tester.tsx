@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * QueryTester Component - AKASIA v2.4
+ * QueryTester Component - AKASIA
  * Batch test pertanyaan untuk QA di Admin Panel
  */
 

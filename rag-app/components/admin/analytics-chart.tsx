@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * AnalyticsChart Component - AKASIA v2.0
+ * AnalyticsChart Component - AKASIA
  * Chart analitik dengan data real-time dari backend
  */
 

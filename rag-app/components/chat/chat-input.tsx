@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * ChatInput Component - AKASIA v2.0
+ * ChatInput Component - AKASIA
  * Input chat dengan animasi glow dan micro-interactions
  */
 
@@ -83,7 +83,7 @@ export function ChatInput({ onSend }: { onSend: (message: string) => void }) {
                         onKeyDown={handleKeyDown}
                         onFocus={() => setIsFocused(true)}
                         onBlur={() => setIsFocused(false)}
-                        placeholder="Tanyakan seputar akademik UHO..."
+                        placeholder="Tanyakan seputar akademik ILKOM..."
                         disabled={isTyping}
                         className="flex-1 bg-transparent border-none outline-none text-white placeholder-slate-500 px-3 py-3 disabled:opacity-50 text-sm md:text-base"
                     />
@@ -117,7 +117,7 @@ export function ChatInput({ onSend }: { onSend: (message: string) => void }) {
                     animate={{ opacity: 0.6 }}
                     transition={{ delay: 0.5 }}
                 >
-                    AKASIA v2.0 • Powered by AI
+                    AKASIA • Powered by Kelompok 5
                 </motion.p>
             </motion.div>
         </div>

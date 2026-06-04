@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * Landing Page - AKASIA v2.5
+ * Landing Page - AKASIA
  * AI-Themed Modern Landing with Neural Network Animations
  */
 
@@ -309,7 +309,7 @@ export default function LandingPage() {
                         className="text-sm sm:text-lg text-slate-400 max-w-2xl mx-auto mb-8 sm:mb-12 flex items-center justify-center gap-2 px-4"
                     >
                         <Bot className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400 shrink-0" />
-                        <span>AI Chatbot yang menjawab pertanyaan akademik UHO dengan akurat</span>
+                        <span>AI Chatbot yang menjawab pertanyaan akademik ILKOM dengan akurat</span>
                     </motion.p>
 
                     {/* CTA Buttons */}
@@ -476,7 +476,7 @@ export default function LandingPage() {
                                 </h3>
                                 <p className="text-sm sm:text-lg text-slate-400 mb-6 sm:mb-8 leading-relaxed">
                                     Tanyakan tentang masa studi, syarat kelulusan, prosedur cuti akademik,
-                                    atau jadwal kalender akademik UHO.
+                                    atau jadwal kalender akademik ILKOM.
                                 </p>
                                 <Link href="/chat" className="inline-block w-full sm:w-auto">
                                     <motion.button
@@ -556,10 +556,10 @@ export default function LandingPage() {
                         <span className="text-xl sm:text-2xl font-bold gradient-text">AKASIA</span>
                     </motion.div>
                     <p className="text-sm sm:text-base text-slate-400 mb-3">
-                        Asisten Akademik Berbasis AI untuk Universitas Halu Oleo
+                        Asisten Akademik Berbasis AI untuk Jurusan Ilmu Komputer
                     </p>
                     <p className="text-slate-600 text-xs sm:text-sm">
-                        © 2025 AKASIA v2.5 • Built with Next.js, FastAPI, LangChain & Groq AI
+                        © 2025 AKASIA • Built with Next.js, FastAPI, LangChain & Groq AI
                     </p>
                 </div>
             </footer>

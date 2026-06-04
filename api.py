@@ -2,7 +2,7 @@
 ============================================
 AKASIA v1.0 - API Backend Server
 ============================================
-Asisten Akademik Berbasis AI untuk UHO
+Asisten Akademik Berbasis AI untuk ILKOM
 
 File ini berisi:
 - Endpoint API untuk chat (/api/chat)
@@ -31,7 +31,7 @@ from app import extract_text_from_pdf
 # Inisialisasi FastAPI dengan metadata
 app = FastAPI(
     title="AKASIA API",
-    description="Asisten Akademik Berbasis AI untuk Universitas Halu Oleo",
+    description="Asisten Akademik Berbasis AI untuk Jurusan Ilmu Komputer",
     version="1.0.0"
 )
 
@@ -57,7 +57,7 @@ class ChatRequest(BaseModel):
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "ok", "message": "UHO Academic Chatbot API is running"}
+    return {"status": "ok", "message": "ILKOM Academic Chatbot API is running"}
 
 @app.post("/api/chat")
 async def chat(request: ChatRequest):

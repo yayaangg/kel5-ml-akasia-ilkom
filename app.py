@@ -357,7 +357,7 @@ def answer_question(question, vectorstore, llm):
         context = "\n\n".join([doc.page_content for doc in docs])
         
         # Create professional customer service prompt with strict context enforcement
-        prompt = f"""Anda adalah Asisten Akademik Virtual Universitas Halu Oleo (UHO) yang profesional dan ramah.
+        prompt = f"""Anda adalah Asisten Akademik Virtual Jurusan Ilmu Komputer (ILKOM) yang profesional dan ramah.
 
 ATURAN KETAT - WAJIB DIIKUTI:
 1. HANYA jawab pertanyaan yang BERKAITAN dengan dokumen akademik yang telah di-upload
