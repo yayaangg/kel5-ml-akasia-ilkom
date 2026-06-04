@@ -1013,3 +1013,505 @@ PENTING:
 PERTANYAAN MAHASISWA: {question}
 
 Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yang relevan, berikan jawaban yang jelas. Jika tidak ada, berikan respons ramah dengan saran yang membantu."""
+
+# v2.5: Build messages with conversation history
+        messages = [{"role": "system", "content": system_prompt}]
+        
+        # Include conversation history for context (max 6 turns)
+        if history:
+            for role, content in history[-6:]:
+                if role == "user":
+                    messages.append({"role": "user", "content": content})
+                else:
+                    messages.append({"role": "assistant", "content": content})
+        
+        messages.append({"role": "user", "content": prompt})
+        
+        try:
+            stream = self._call_llm(messages, stream=True)
+            full_response = ""  # Collect for caching
+            
+            for chunk in stream:
+                if chunk.choices[0].delta.content:
+                    content = chunk.choices[0].delta.content
+                    full_response += content
+                    yield {"response": content}
+            
+            # v2.2: Generate related questions after response
+            related = self._generate_related_questions(question, reranked_docs)
+            if related:
+                yield {"related_questions": related}
+            
+            # v2.3: Save to cache
+            # Evict oldest if cache full
+            if len(self.response_cache) >= self.cache_max_size:
+                oldest_key = min(self.response_cache, key=lambda k: self.response_cache[k]["timestamp"])
+                del self.response_cache[oldest_key]
+            
+            self.response_cache[query_hash] = {
+                "response": full_response,
+                "citations": citations,
+                "confidence": confidence,
+                "related_questions": related,
+                "timestamp": time()
+            }
+                
+        except Exception as e:
+            yield {"response": f"Error: {str(e)}"}
+    
+    def _generate_related_questions(self, question, docs, max_questions=4):
+        """
+        v2.2: Generate related questions based on current query and documents.
+        Uses keywords and document topics to suggest follow-up questions.
+        """
+        question_lower = question.lower()
+        related = []
+        
+        # Define topic-based related questions
+        topic_questions = {
+            "masa studi": [
+                "Apa sanksi jika melebihi masa studi maksimal?",
+                "Bagaimana cara mengajukan perpanjangan masa studi?",
+                "Berapa SKS minimum per semester?"
+            ],
+            "sks": [
+                "Berapa beban SKS maksimal per semester?",
+                "Bagaimana konversi nilai ke huruf?",
+                "Apa syarat mengambil SKS maksimal?"
+            ],
+            "wisuda": [
+                "Kapan jadwal pendaftaran wisuda?",
+                "Apa saja berkas yang diperlukan untuk wisuda?",
+                "Bagaimana cara mengecek status kelulusan?"
+            ],
+            "cuti": [
+                "Berapa lama maksimal cuti akademik?",
+                "Apa saja syarat mengajukan cuti?",
+                "Bagaimana prosedur aktivasi setelah cuti?"
+            ],
+            "ipk": [
+                "Berapa IPK minimum untuk lulus cum laude?",
+                "Bagaimana cara menghitung IPK?",
+                "Apa predikat kelulusan berdasarkan IPK?"
+            ],
+            "krs": [
+                "Kapan jadwal pengisian KRS?",
+                "Bagaimana cara mengubah KRS?",
+                "Berapa batas waktu pembatalan mata kuliah?"
+            ],
+            "jadwal": [
+                "Kapan ujian akhir semester?",
+                "Kapan libur semester genap?",
+                "Kapan perkuliahan dimulai?"
+            ],
+            "syarat": [
+                "Apa syarat mengikuti ujian skripsi?",
+                "Apa syarat magang/KKN?",
+                "Apa syarat pindah jurusan?"
+            ]
+        }
+        
+        # Find matching topic
+        for topic, questions in topic_questions.items():
+            if topic in question_lower:
+                # Add questions that are different from original
+                for q in questions:
+                    if q.lower() != question_lower and len(related) < max_questions:
+                        related.append(q)
+        
+        # If no specific topic match, add general academic questions
+        if len(related) < 2:
+            general_questions = [
+                "Apa syarat kelulusan program S1?",
+                "Bagaimana prosedur pengajuan surat keterangan?",
+                "Siapa yang bisa dihubungi untuk konsultasi akademik?"
+            ]
+            for q in general_questions:
+                if len(related) < max_questions:
+                    related.append(q)
+        
+        return related[:max_questions]
+    
+    def _rerank_documents(self, question, docs):
+        """
+        v2.0: Re-rank documents based on relevance signals
+        Uses keyword overlap and position weighting
+        """
+        question_lower = question.lower()
+        question_words = set(re.findall(r'\b\w+\b', question_lower))
+        
+        # Remove stopwords
+        stopwords = {'apa', 'berapa', 'kapan', 'dimana', 'bagaimana', 'siapa', 
+                     'yang', 'dan', 'atau', 'untuk', 'dengan', 'ke', 'di', 'dari',
+                     'adalah', 'ini', 'itu', 'ada', 'tidak', 'bisa', 'dapat'}
+        question_words = question_words - stopwords
+        
+        reranked = []
+        for doc, score, strategy in docs:
+            content_lower = doc.page_content.lower()
+            content_words = set(re.findall(r'\b\w+\b', content_lower))
+            
+            # Calculate relevance score
+            overlap = len(question_words & content_words)
+            overlap_ratio = overlap / max(len(question_words), 1)
+            
+            # Bonus for exact phrase match
+            phrase_bonus = 0.2 if question_lower[:20] in content_lower else 0
+            
+            # Bonus for Pasal reference in question matching content
+            pasal_match = re.search(r'pasal\s*(\d+)', question_lower)
+            pasal_bonus = 0.3 if pasal_match and f"pasal {pasal_match.group(1)}" in content_lower else 0
+            
+            # Calculate final relevance (lower is better for FAISS scores)
+            relevance = overlap_ratio + phrase_bonus + pasal_bonus
+            adjusted_score = score * (1 - relevance * 0.3)  # Boost relevant docs
+            
+            reranked.append((doc, adjusted_score, strategy, relevance))
+        
+        # Sort by adjusted score (lower is better)
+        reranked.sort(key=lambda x: x[1])
+        return reranked
+
+    def _apply_synonym_mapping(self, question):
+        """
+        v2.6: Expand abbreviations dan istilah untuk retrieval lebih baik.
+        Menambahkan variasi kata kunci untuk meningkatkan kemungkinan match.
+        """
+        # Direct replacements
+        mappings = {
+            r'\bS1\b': 'S1 sarjana program sarjana',
+            r'\bS2\b': 'S2 magister program magister pascasarjana',
+            r'\bS3\b': 'S3 doktor program doktor',
+            r'\bD3\b': 'D3 diploma tiga vokasi',
+            r'\bD4\b': 'D4 diploma empat sarjana terapan',
+            r'\bKRS\b': 'KRS kartu rencana studi pengisian',
+            r'\bKHS\b': 'KHS kartu hasil studi',
+            r'\bUKT\b': 'UKT uang kuliah tunggal SPP pembayaran',
+            r'\bSPP\b': 'SPP UKT uang kuliah tunggal pembayaran',
+            r'\bIPK\b': 'IPK indeks prestasi kumulatif',
+            r'\bIPS\b': 'IPS indeks prestasi semester beban studi sks Pasal 21',
+            r'\bSKS\b': 'SKS satuan kredit semester beban studi',
+            r'\bUTS\b': 'UTS ujian tengah semester',
+            r'\bUAS\b': 'UAS ujian akhir semester',
+            r'\bKKN\b': 'KKN kuliah kerja nyata',
+            r'\bTA\b': 'tugas akhir skripsi',
+            r'\bDO\b': 'drop out dikeluarkan',
+            r'\bcuti\b': 'cuti akademik izin tidak aktif',
+            r'\bwisuda\b': 'wisuda kelulusan yudisium',
+            r'\blulus\b': 'lulus kelulusan yudisium predikat',
+            # v2.6: Calendar/semester terms
+            r'\bgasal\b': 'gasal ganjil semester I',
+            r'\bgenap\b': 'genap semester II',
+            r'\bongoing\b': 'ongoing mahasiswa lama aktif',
+            r'\bbayar\b': 'bayar pembayaran registrasi',
+            r'\bpembayaran\b': 'pembayaran bayar registrasi UKT SPP',
+            r'\b2025\.1\b': '2025.1 semester gasal 2025',
+            r'\b2025\.2\b': '2025.2 semester genap 2026',
+            r'\b2025\.3\b': '2025.3 semester antara 2026',
+        }
+        result = question
+        for pattern, replacement in mappings.items():
+            result = re.sub(pattern, replacement, result, flags=re.IGNORECASE)
+        
+        # Add key terms based on question type
+        q_lower = question.lower()
+        additions = []
+        
+        if 'masa studi' in q_lower or 'berapa lama' in q_lower:
+            additions.append('beban studi tahun akademik sks')
+        if 'syarat' in q_lower or 'ketentuan' in q_lower:
+            additions.append('pasal peraturan')
+        if 'nilai' in q_lower or 'ipk' in q_lower:
+            additions.append('indeks prestasi huruf mutu')
+        if 'jadwal' in q_lower or 'kapan' in q_lower:
+            additions.append('tanggal kalender akademik jadwal')
+        # v2.6: Payment-related additions
+        if 'pembayaran' in q_lower or 'bayar' in q_lower or 'ukt' in q_lower or 'spp' in q_lower:
+            additions.append('registrasi mahasiswa ongoing')
+            
+        if additions:
+            result = result + ' ' + ' '.join(additions)
+        
+        return result
+
+    def _extract_keywords(self, text):
+        """Extract meaningful keywords"""
+        stopwords = {'apa', 'adalah', 'yang', 'dan', 'di', 'ke', 'dari', 'untuk', 'dengan',
+                     'pada', 'ini', 'itu', 'atau', 'juga', 'saya', 'kamu', 'dia', 'mereka',
+                     'bagaimana', 'kapan', 'dimana', 'siapa', 'mengapa', 'berapa', 'apakah',
+                     'bisa', 'dapat', 'akan', 'sudah', 'belum', 'tidak', 'ada', 'harus',
+                     'mau', 'ingin', 'tolong', 'mohon', 'coba', 'jelaskan', 'sebutkan',
+                     'jika', 'bila', 'ketika', 'saat', 'agar', 'supaya', 'sehingga'}
+        words = re.findall(r'\b[a-zA-Z]+\b', text.lower())
+        return [w for w in words if w not in stopwords and len(w) > 2]
+
+    # ========================================
+    # v2.6: Multi-Query Retrieval for Higher Accuracy
+    # ========================================
+    
+    def _generate_query_variations(self, question):
+        """
+        v2.6: Generate multiple query variations for better retrieval.
+        Returns 3 variations: original expanded, rephrased, keyword-focused.
+        """
+        variations = []
+        q_lower = question.lower()
+        
+        # Variation 1: Original with synonym expansion (already done)
+        variations.append(self._apply_synonym_mapping(question))
+        
+        # Variation 2: Rephrased formal academic
+        rephrase_patterns = {
+            r'berapa lama': 'durasi waktu',
+            r'berapa': 'jumlah total',
+            r'apa saja': 'syarat ketentuan',
+            r'bagaimana': 'prosedur cara mekanisme',
+            r'kapan': 'jadwal tanggal waktu',
+            r'apa itu': 'definisi pengertian',
+            r'syarat': 'persyaratan ketentuan kriteria',
+            r'cara': 'prosedur langkah mekanisme',
+            r'biaya': 'tarif pembayaran nominal',
+        }
+        
+        rephrased = question
+        for pattern, replacement in rephrase_patterns.items():
+            if re.search(pattern, q_lower):
+                rephrased = re.sub(pattern, replacement, rephrased, flags=re.IGNORECASE)
+        
+        if rephrased != question:
+            variations.append(self._apply_synonym_mapping(rephrased))
+        
+        # Variation 3: Keyword extraction + context
+        keywords = self._extract_keywords(question)
+        if keywords:
+            # Add academic context keywords
+            context_additions = []
+            if any(k in ['lulus', 'kelulusan', 'wisuda', 'yudisium'] for k in keywords):
+                context_additions.extend(['predikat', 'IPK', 'SKS', 'syarat'])
+            if any(k in ['studi', 'kuliah', 'semester'] for k in keywords):
+                context_additions.extend(['beban', 'akademik', 'tahun'])
+            if any(k in ['cuti', 'izin', 'libur'] for k in keywords):
+                context_additions.extend(['akademik', 'prosedur', 'permohonan'])
+            if any(k in ['nilai', 'ipk', 'ips'] for k in keywords):
+                context_additions.extend(['huruf', 'mutu', 'prestasi'])
+                
+            keyword_query = ' '.join(keywords + context_additions[:4])
+            variations.append(keyword_query)
+        
+        # Ensure we have unique variations
+        unique_variations = list(dict.fromkeys(variations))
+        return unique_variations[:3]  # Max 3 variations
+    
+    def _multi_query_retrieval(self, question, k=30, alpha=0.7):
+        """
+        v2.6: Retrieve documents using multiple query variations.
+        Merges results from all variations and deduplicates.
+        """
+        query_variations = self._generate_query_variations(question)
+        print(f"  🔄 Multi-query retrieval with {len(query_variations)} variations")
+        
+        all_results = {}  # hash -> (doc, best_score, strategy)
+        
+        for i, query in enumerate(query_variations):
+            try:
+                results = self._hybrid_search(query, k=k, alpha=alpha)
+                
+                for doc, score, strategy in results:
+                    content_hash = hash(doc.page_content[:100])
+                    
+                    if content_hash not in all_results:
+                        all_results[content_hash] = (doc, score, strategy)
+                    else:
+                        # Keep the better score (lower is better in our normalized scheme)
+                        existing_score = all_results[content_hash][1]
+                        if score < existing_score:
+                            all_results[content_hash] = (doc, score, strategy)
+                            
+            except Exception as e:
+                print(f"  ⚠️ Query variation {i+1} failed: {e}")
+                continue
+        
+        # Sort by score and return top k
+        sorted_results = sorted(all_results.values(), key=lambda x: x[1])
+        print(f"  ✓ Retrieved {len(sorted_results)} unique documents from multi-query")
+        
+        return sorted_results[:k]
+
+    def _extract_entities(self, text):
+        """Extract important entities like numbers, dates, proper nouns"""
+        entities = []
+        
+        # Numbers with context
+        nums = re.findall(r'\d+(?:[.,]\d+)?(?:\s*(?:tahun|semester|sks|persen|%|bulan|minggu|hari))?', text, re.IGNORECASE)
+        entities.extend(nums)
+        
+        # Dates
+        dates = re.findall(r'\d{1,2}\s+(?:Januari|Februari|Maret|April|Mei|Juni|Juli|Agustus|September|Oktober|November|Desember)\s+\d{4}', text, re.IGNORECASE)
+        entities.extend(dates)
+        
+        # Academic terms
+        terms = re.findall(r'(?:IPK|IPS|SKS|KRS|UKT|SPP|S1|S2|S3|D3|D4)\b', text, re.IGNORECASE)
+        entities.extend(terms)
+        
+        # Proper nouns (capitalized words)
+        caps = re.findall(r'\b[A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+)*\b', text)
+        entities.extend(caps[:3])
+        
+        return list(set(entities))[:10]
+
+    def _get_regulatory_terms(self, question):
+        """Generate specific regulatory search terms based on question"""
+        terms = []
+        q = question.lower()
+        
+        # === KALENDER AKADEMIK ===
+        if any(w in q for w in ['kapan', 'jadwal', 'tanggal', 'periode', 'semester']):
+            terms.append("jadwal pembayaran UKT SPP registrasi")
+            terms.append("pengisian KRS online SIAKAD")
+            terms.append("masa perkuliahan praktikum")
+        
+        if any(w in q for w in ['ukt', 'spp', 'pembayaran', 'registrasi']):
+            terms.append("pembayaran UKT SPP semester gasal genap")
+            terms.append("batas akhir registrasi ulang")
+        
+        if any(w in q for w in ['uts', 'uas', 'ujian tengah', 'ujian akhir']):
+            terms.append("ujian tengah semester UTS")
+            terms.append("ujian akhir semester UAS")
+        
+        if any(w in q for w in ['wisuda', 'yudisium', 'dies natalis']):
+            terms.append("pelaksanaan wisuda periode")
+            terms.append("dies natalis upacara akademik")
+        
+        if any(w in q for w in ['kkn', 'kuliah kerja nyata', 'magang']):
+            terms.append("KKN Kuliah Kerja Nyata batch")
+            terms.append("magang praktik kerja lapangan")
+        
+        if any(w in q for w in ['snbp', 'snbt', 'utbk', 'smmuho', 'seleksi']):
+            terms.append("SNBP SNBT UTBK seleksi masuk")
+            terms.append("SMMUHO pendaftaran ujian")
+        
+        # === MASA STUDI & BEBAN SKS ===
+        if any(w in q for w in ['masa studi', 'lama studi', 'beban studi', 'beban']):
+            terms.append("beban studi program ditempuh paling lama tahun")
+            terms.append("Pasal 44 sarjana 144 sks 7 tahun")
+            terms.append("Pasal 43 diploma 108 sks 5 tahun")
+        
+        if any(w in q for w in ['d3', 'diploma']):
+            terms.append("Pasal 43 diploma 3 108 sks 5 tahun")
+        
+        if any(w in q for w in ['s1', 'sarjana']):
+            terms.append("Pasal 44 sarjana 144 sks 7 tahun akademik")
+        
+        if any(w in q for w in ['s2', 'magister']):
+            terms.append("Pasal 46 magister 36 sks 4 tahun")
+        
+        if any(w in q for w in ['s3', 'doktor']):
+            terms.append("Pasal 47 doktor 42 sks 7 tahun disertasi")
+        
+        if any(w in q for w in ['ips', 'sks', 'diprogramkan', 'diprogram', 'ambil']):
+            terms.append("IPS Jumlah sks maksimal diprogramkan")
+            terms.append("3,01 4,00 24 sks 2,75 22 sks 2,51 20 sks")
+        
+        if any(w in q for w in ['1 sks', 'bobot sks', 'nilai sks']):
+            terms.append("1 sks tatap muka praktikum per minggu")
+        
+        # === PENILAIAN & RUMUS ===
+        if any(w in q for w in ['nilai', 'huruf', 'rentang', 'konversi']):
+            terms.append("nilai huruf A B C D E konversi angka")
+            terms.append("rentang nilai 81 100 66 80 56 65")
+        
+        if any(w in q for w in ['rumus', 'nilai akhir', 'na', 'komponen']):
+            terms.append("rumus nilai akhir NA tugas UTS UAS")
+            terms.append("komponen penilaian praktikum")
+        
+        if any(w in q for w in ['kehadiran', 'hadir', 'absen', 'persentase']):
+            terms.append("kehadiran minimal 75 persen ujian")
+            terms.append("syarat mengikuti ujian mahasiswa")
+        
+        # === KELULUSAN & PREDIKAT ===
+        if any(w in q for w in ['lulus', 'kelulusan', 'syarat lulus']):
+            terms.append("syarat kelulusan IPK minimal")
+            terms.append("dinyatakan lulus program")
+        
+        if any(w in q for w in ['predikat', 'cum laude', 'pujian', 'memuaskan']):
+            terms.append("predikat kelulusan cum laude dengan pujian")
+            terms.append("sangat memuaskan memuaskan IPK")
+        
+        if any(w in q for w in ['wisudawan', 'terbaik']):
+            terms.append("wisudawan terbaik IPK tertinggi masa studi")
+        
+        # === ADMINISTRASI & CUTI ===
+        if any(w in q for w in ['cuti', 'akademik', 'berhenti sementara']):
+            terms.append("Pasal 96 cuti akademik syarat")
+            terms.append("maksimum cuti semester berturutan")
+        
+        if any(w in q for w in ['pindah', 'alih program', 'transfer']):
+            terms.append("pindah kuliah antar program studi")
+            terms.append("syarat IPK pindah semester")
+        
+        if any(w in q for w in ['daftar ulang', 'registrasi', 'non aktif']):
+            terms.append("registrasi ulang status mahasiswa")
+            terms.append("non aktif dua semester berturut")
+        
+        if any(w in q for w in ['ktm', 'kartu tanda mahasiswa']):
+            terms.append("Pasal 109 KTM hilang surat keterangan")
+        
+        # === SKRIPSI, TESIS, DISERTASI ===
+        if any(w in q for w in ['skripsi', 'tugas akhir', 'ta']):
+            terms.append("skripsi tugas akhir syarat")
+            terms.append("masa penulisan skripsi maksimal")
+        
+        if any(w in q for w in ['tesis']):
+            terms.append("tesis magister S2 syarat")
+        
+        if any(w in q for w in ['disertasi']):
+            terms.append("disertasi doktor S3 promotor")
+        
+        if any(w in q for w in ['toefl', 'bahasa inggris']):
+            terms.append("TOEFL skor minimal ujian akhir")
+        
+        if any(w in q for w in ['publikasi', 'jurnal']):
+            terms.append("publikasi jurnal syarat kelulusan")
+        
+        if any(w in q for w in ['pembimbing', 'promotor', 'dosen']):
+            terms.append("pembimbing utama skripsi promotor")
+            terms.append("syarat jabatan fungsional")
+        
+        # === EVALUASI & DROP OUT ===
+        if any(w in q for w in ['evaluasi', 'do', 'drop out', 'gagal studi']):
+            terms.append("evaluasi program mahasiswa DO")
+            terms.append("gagal studi dikeluarkan")
+        
+        if any(w in q for w in ['perpanjangan', 'masa studi']):
+            terms.append("perpanjangan masa studi syarat")
+        
+        if any(w in q for w in ['skorsing']):
+            terms.append("masa skorsing dihitung")
+        
+        # === ETIKA & SANKSI ===
+        if any(w in q for w in ['plagiat', 'sanksi', 'pelanggaran']):
+            terms.append("sanksi plagiat pelanggaran")
+            terms.append("teguran skorsing dikeluarkan")
+        
+        if any(w in q for w in ['larangan', 'dilarang', 'tidak boleh']):
+            terms.append("larangan mahasiswa kampus")
+        
+        if any(w in q for w in ['demonstrasi', 'demo', 'unjuk rasa']):
+            terms.append("demonstrasi radius izin tertulis")
+        
+        if any(w in q for w in ['narkoba', 'obat terlarang']):
+            terms.append("narkoba sanksi berat dikeluarkan")
+        
+        if any(w in q for w in ['pemalsuan', 'palsu', 'tanda tangan']):
+            terms.append("memalsukan tanda tangan sanksi")
+        
+        if any(w in q for w in ['skpi', 'surat keterangan']):
+            terms.append("SKPI Surat Keterangan Pendamping Ijazah")
+        
+        if any(w in q for w in ['gelar', 'dicabut']):
+            terms.append("gelar akademik dicabut tidak sah")
+        
+        if any(w in q for w in ['dosen pa', 'pembimbing akademik']):
+            terms.append("dosen pembimbing akademik PA kewajiban")
+        
+        return terms
