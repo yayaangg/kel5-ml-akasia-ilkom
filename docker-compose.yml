@@ -1,35 +1,42 @@
-version: '3.8'
-
 services:
   api:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile.api
     container_name: akasia_api
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./data:/app/data
-      - ./faiss_index:/app/faiss_index
-      - ./documents_metadata.json:/app/documents_metadata.json
-      - .env:/app/.env
+    restart: always
+    expose:
+      - "8000"
     environment:
       - GROQ_API_KEY=${GROQ_API_KEY}
-    restart: unless-stopped
+
+      # Domain API
+      - VIRTUAL_HOST=api-akasia.meambo.id
+      - LETSENCRYPT_HOST=api-akasia.meambo.id
+      - VIRTUAL_PORT=8000
+    networks:
+      - proxy_network
 
   web:
     build:
       context: ./rag-app
       dockerfile: Dockerfile
     container_name: akasia_web
-    ports:
-      - "3000:3000"
+    restart: always
+    expose:
+      - "3000"
     depends_on:
       - api
     environment:
-      - NEXT_PUBLIC_API_URL=http://api:8000
-    restart: unless-stopped
+      - NEXT_PUBLIC_API_URL=https://api-akasia.meambo.id
 
-volumes:
-  faiss_data:
-  documents_data:
+      # Domain Frontend
+      - VIRTUAL_HOST=akasia.meambo.id
+      - LETSENCRYPT_HOST=akasia.meambo.id
+      - VIRTUAL_PORT=3000
+    networks:
+      - proxy_network
+
+networks:
+  proxy_network:
+    external: true
