@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: akasia_api
+    restart: always
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./faiss_index:/app/faiss_index
+      - ./documents_metadata.json:/app/documents_metadata.json
+      - .env:/app/.env
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+
+  web:
+    build:
+      context: ./rag-app
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=https://api-akasia.kloudbox.my.id
+    container_name: akasia_web
+    restart: always
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - api

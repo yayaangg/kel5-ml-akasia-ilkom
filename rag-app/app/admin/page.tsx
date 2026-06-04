@@ -39,8 +39,8 @@ export default function AdminPage() {
         setError(null)
         try {
             const [docsRes, statsRes] = await Promise.all([
-                fetch('http://localhost:8000/api/documents'),
-                fetch('http://localhost:8000/api/stats')
+                fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents`),
+                fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/stats`)
             ])
 
             if (!docsRes.ok || !statsRes.ok) {
@@ -70,7 +70,7 @@ export default function AdminPage() {
 
         setDeleteStatus({ id: docId, status: 'loading' })
         try {
-            const res = await fetch(`http://localhost:8000/api/documents/${docId}`, {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents/${docId}`, {
                 method: 'DELETE'
             })
             if (!res.ok) throw new Error('Delete failed')

@@ -148,7 +148,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
                 content: m.content
             })) || []
 
-            const response = await fetch("http://localhost:8000/api/chat", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/chat`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -244,7 +244,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
                         ...room,
                         messages: [...room.messages, {
                             role: "ai",
-                            content: "Maaf, terjadi kesalahan saat menghubungi server. Pastikan backend Python berjalan di http://localhost:8000",
+                            content: `Maaf, terjadi kesalahan saat menghubungi server. Pastikan backend Python berjalan di ${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}`,
                             citations: []
                         }]
                     }
@@ -278,7 +278,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
 
         // Send to API
         try {
-            await fetch("http://localhost:8000/api/feedback", {
+            await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/feedback`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

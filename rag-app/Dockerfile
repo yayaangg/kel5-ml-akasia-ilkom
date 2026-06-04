@@ -16,7 +16,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Environment API URL saat build (untuk client-side components)
-ENV NEXT_PUBLIC_API_URL=http://localhost:8000
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://localhost:8000}
 RUN npm run build
 
 # Production image, copy all the files and run next

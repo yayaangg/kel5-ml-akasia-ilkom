@@ -40,7 +40,7 @@ const bubbleVariants = {
         y: 0,
         scale: 1,
         transition: {
-            type: "spring",
+            type: "spring" as const,
             stiffness: 400,
             damping: 30,
             mass: 0.8
@@ -54,7 +54,7 @@ const avatarVariants = {
         scale: 1,
         opacity: 1,
         transition: {
-            type: "spring",
+            type: "spring" as const,
             stiffness: 500,
             damping: 25,
             delay: 0.1
@@ -70,7 +70,7 @@ const citationVariants = {
         transition: {
             delay: 0.3 + (i * 0.1),
             duration: 0.3,
-            ease: [0.4, 0, 0.2, 1]
+            ease: [0.4, 0, 0.2, 1] as const
         }
     })
 }

@@ -27,7 +27,7 @@ const itemVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { type: "spring", stiffness: 300, damping: 25 }
+    transition: { type: "spring" as const, stiffness: 300, damping: 25 }
   }
 }
 
@@ -38,7 +38,7 @@ const questionVariants = {
     x: 0,
     transition: {
       delay: 0.4 + (i * 0.1),
-      type: "spring",
+      type: "spring" as const,
       stiffness: 300,
       damping: 25
     }
@@ -47,7 +47,7 @@ const questionVariants = {
     scale: 1.02,
     y: -4,
     boxShadow: "0 10px 30px rgba(139, 92, 246, 0.15)",
-    transition: { type: "spring", stiffness: 400, damping: 20 }
+    transition: { type: "spring" as const, stiffness: 400, damping: 20 }
   },
   tap: { scale: 0.98 }
 }

@@ -36,7 +36,7 @@ export function FeedbackDashboard() {
 
     const fetchStats = async () => {
         try {
-            const res = await fetch("http://localhost:8000/api/feedback/stats")
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/feedback/stats`)
             if (res.ok) {
                 const data = await res.json()
                 setStats(data)
