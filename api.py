@@ -21,6 +21,7 @@ from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from rag_engine import RAGEngine
 from typing import List
+from datetime import datetime, timedelta
 import uvicorn
 import shutil
 import os
@@ -177,6 +178,164 @@ async def clear_knowledge_base():
         return {"status": "success", "message": "Knowledge base cleared"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# ============================================
+# FEEDBACK & ANALYTICS ENDPOINTS
+# ============================================
+
+FEEDBACK_FILE = "./data/feedback.json"
+
+class FeedbackRequest(BaseModel):
+    query: str
+    response: str
+    rating: str
+    confidence: int = None
+
+def load_feedback():
+    if os.path.exists(FEEDBACK_FILE):
+        try:
+            with open(FEEDBACK_FILE, "r") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return []
+
+def save_feedback(data):
+    try:
+        os.makedirs(os.path.dirname(FEEDBACK_FILE), exist_ok=True)
+        with open(FEEDBACK_FILE, "w") as f:
+            json.dump(data, f, indent=2)
+    except Exception as e:
+        print(f"Error saving feedback: {e}")
+
+@app.post("/api/feedback")
+async def submit_feedback(req: FeedbackRequest):
+    feedbacks = load_feedback()
+    new_fb = {
+        "query": req.query,
+        "response": req.response,
+        "rating": req.rating,
+        "confidence": req.confidence,
+        "timestamp": datetime.now().isoformat()
+    }
+    feedbacks.append(new_fb)
+    save_feedback(feedbacks)
+    return {"status": "success", "message": "Feedback submitted successfully"}
+
+@app.get("/api/feedback/stats")
+async def get_feedback_stats():
+    feedbacks = load_feedback()
+    total = len(feedbacks)
+    thumbs_up = sum(1 for f in feedbacks if f["rating"] == "up")
+    thumbs_down = sum(1 for f in feedbacks if f["rating"] == "down")
+    satisfaction_rate = int((thumbs_up / total) * 100) if total > 0 else 100
+    
+    # Sort and take recent 10
+    recent = list(reversed(feedbacks))[:10]
+    
+    return {
+        "thumbs_up": thumbs_up,
+        "thumbs_down": thumbs_down,
+        "total": total,
+        "satisfaction_rate": satisfaction_rate,
+        "recent_feedback": recent
+    }
+
+@app.get("/api/analytics")
+async def get_analytics():
+    query_history = engine.metadata.get("query_history", [])
+    now = datetime.now()
+    
+    # 1. Hourly Stats (Last 24 Hours)
+    hourly_stats = []
+    for i in range(23, -1, -1):
+        target_time = now - timedelta(hours=i)
+        time_str = target_time.strftime("%H:00")
+        hourly_stats.append({"time": time_str, "queries": 0})
+        
+    for q in query_history:
+        try:
+            q_time = datetime.fromisoformat(q["timestamp"])
+            if now - q_time <= timedelta(hours=24):
+                hours_ago = int((now - q_time).total_seconds() / 3600)
+                if 0 <= hours_ago < 24:
+                    hourly_stats[23 - hours_ago]["queries"] += 1
+        except Exception:
+            pass
+            
+    # 2. Daily Stats (Last 7 Days)
+    days_indonesian = ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"]
+    daily_stats = []
+    for i in range(6, -1, -1):
+        target_date = now - timedelta(days=i)
+        day_name = days_indonesian[target_date.weekday()]
+        date_str = target_date.strftime("%d/%m")
+        daily_stats.append({"day": day_name, "date": date_str, "queries": 0})
+        
+    for q in query_history:
+        try:
+            q_time = datetime.fromisoformat(q["timestamp"])
+            if now - q_time <= timedelta(days=7):
+                days_ago = int((now - q_time).total_seconds() / 86400)
+                if 0 <= days_ago < 7:
+                    daily_stats[6 - days_ago]["queries"] += 1
+        except Exception:
+            pass
+            
+    # 3. Popular Topics
+    topics = [
+        {"name": "Skripsi / Tugas Akhir", "keywords": ["skripsi", "ta", "tugas akhir", "judul", "proposal"]},
+        {"name": "Cuti Akademik", "keywords": ["cuti", "aktif kembali", "krs", "registrasi"]},
+        {"name": "Kelulusan / Cum Laude", "keywords": ["cum laude", "kelulusan", "lulus", "yudisium", "wisuda"]},
+        {"name": "Ujian (UTS / UAS)", "keywords": ["uts", "uas", "ujian", "kalender"]},
+        {"name": "Magang / KKN", "keywords": ["magang", "kkn", "praktik", "pkl"]},
+        {"name": "Administrasi / UKT", "keywords": ["ukt", "bayar", "registrasi", "keuangan", "biaya"]}
+    ]
+    
+    topic_counts = {t["name"]: 0 for t in topics}
+    topic_counts["Lainnya"] = 0
+    
+    for q in query_history:
+        query_text = q["query"].lower()
+        matched = False
+        for t in topics:
+            if any(kw in query_text for kw in t["keywords"]):
+                topic_counts[t["name"]] += 1
+                matched = True
+                break
+        if not matched:
+            topic_counts["Lainnya"] += 1
+            
+    total_matched = sum(topic_counts.values())
+    popular_topics = []
+    for topic, count in topic_counts.items():
+        percentage = int((count / total_matched) * 100) if total_matched > 0 else 0
+        popular_topics.append({
+            "topic": topic,
+            "count": count,
+            "percentage": percentage
+        })
+    popular_topics.sort(key=lambda x: x["count"], reverse=True)
+    
+    # 4. Recent Queries
+    recent_queries = []
+    for q in reversed(query_history[-15:]):
+        recent_queries.append({
+            "query": q["query"],
+            "timestamp": q["timestamp"]
+        })
+        
+    total_queries_today = sum(1 for q in query_history if (now - datetime.fromisoformat(q["timestamp"])) <= timedelta(hours=24))
+    total_queries_week = sum(1 for q in query_history if (now - datetime.fromisoformat(q["timestamp"])) <= timedelta(days=7))
+    
+    return {
+        "hourly_stats": hourly_stats,
+        "daily_stats": daily_stats,
+        "popular_topics": popular_topics,
+        "recent_queries": recent_queries,
+        "total_queries_today": total_queries_today,
+        "total_queries_week": total_queries_week
+    }
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)

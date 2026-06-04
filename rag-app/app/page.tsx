@@ -9,7 +9,7 @@ import * as React from "react"
 import Link from "next/link"
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion"
 import {
-    GraduationCap, MessageSquare, FileText, BarChart3,
+    GraduationCap, MessageSquare, FileText,
     Sparkles, ArrowRight, BookOpen, Clock, Shield, Zap,
     ChevronRight, Brain, Cpu, Network, BrainCircuit,
     Bot, Wand2, CircuitBoard
@@ -340,16 +340,7 @@ export default function LandingPage() {
                                 />
                             </motion.button>
                         </Link>
-                        <Link href="/admin" className="w-full sm:w-auto">
-                            <motion.button
-                                className="w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-semibold flex items-center gap-2.5 justify-center hover:bg-white/10 hover:border-white/20 transition-all backdrop-blur-sm"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                            >
-                                <BarChart3 className="w-5 h-5 shrink-0" />
-                                <span>Admin Dashboard</span>
-                            </motion.button>
-                        </Link>
+
                     </motion.div>
 
                     {/* Stats with Icons */}
