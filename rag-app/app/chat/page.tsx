@@ -76,7 +76,7 @@ export default function Home() {
   ]
 
   return (
-    <div className="flex flex-col h-screen max-w-4xl mx-auto px-4 pt-16 md:pt-8 pb-32">
+    <div className="flex flex-col h-[100dvh] max-w-4xl mx-auto px-4 pt-20 md:pt-8 pb-28 md:pb-32">
       <div className="flex-1 overflow-y-auto scrollbar-hide py-4">
         <AnimatePresence mode="wait">
           {messages.length === 0 ? (
@@ -87,7 +87,7 @@ export default function Home() {
               initial="hidden"
               animate="visible"
               exit={{ opacity: 0, scale: 0.95 }}
-              className="flex flex-col items-center justify-center h-full text-center space-y-8 py-12"
+              className="flex flex-col items-center justify-center min-h-[70vh] md:h-full text-center space-y-6 sm:space-y-8 py-4 sm:py-12"
             >
               {/* Animated Logo */}
               <motion.div
@@ -106,20 +106,20 @@ export default function Home() {
                     ease: "easeInOut"
                   }}
                 />
-                <div className="relative p-6 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/10 backdrop-blur-sm">
-                  <GraduationCap className="w-14 h-14 text-blue-400" />
+                <div className="relative p-4 sm:p-6 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 border border-white/10 backdrop-blur-sm">
+                  <GraduationCap className="w-10 h-10 sm:w-14 sm:h-14 text-blue-400" />
                 </div>
               </motion.div>
 
               {/* Title & Description */}
-              <motion.div variants={itemVariants} className="space-y-4">
-                <h1 className="text-4xl md:text-5xl font-bold gradient-text">
+              <motion.div variants={itemVariants} className="space-y-2 sm:space-y-4 px-4">
+                <h1 className="text-3xl sm:text-5xl font-bold gradient-text">
                   AKASIA
                 </h1>
-                <p className="text-slate-400 text-lg max-w-lg leading-relaxed">
+                <p className="text-slate-400 text-sm sm:text-lg max-w-lg leading-relaxed">
                   Asisten Akademik AI untuk Universitas Halu Oleo
                 </p>
-                <p className="text-slate-500 text-sm">
+                <p className="text-slate-500 text-xs sm:text-sm">
                   Tanyakan seputar peraturan akademik, kalender, dan informasi kampus
                 </p>
               </motion.div>
@@ -127,7 +127,7 @@ export default function Home() {
               {/* Suggested Questions Grid */}
               <motion.div
                 variants={itemVariants}
-                className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full max-w-2xl mt-6"
+                className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 w-full max-w-2xl mt-4 sm:mt-6 px-2 sm:px-0"
               >
                 {suggestedQuestions.map((question, i) => (
                   <motion.button
@@ -139,12 +139,12 @@ export default function Home() {
                     whileHover="hover"
                     whileTap="tap"
                     onClick={() => sendMessage(question.text)}
-                    className="p-4 text-left text-sm bg-slate-900/50 hover:bg-slate-800/60 border border-slate-700/50 rounded-xl text-slate-300 hover:text-white backdrop-blur-sm group transform-gpu"
+                    className="p-3.5 sm:p-4 text-left text-xs sm:text-sm bg-slate-900/50 hover:bg-slate-800/60 border border-slate-700/50 rounded-xl text-slate-300 hover:text-white backdrop-blur-sm group transform-gpu"
                   >
-                    <span className="text-xl mb-2 block">{question.icon}</span>
+                    <span className="text-lg sm:text-xl mb-1 sm:mb-2 block">{question.icon}</span>
                     <span className="font-medium">{question.text}</span>
                     <motion.div
-                      className="mt-2 flex items-center gap-1 text-xs text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity"
+                      className="mt-1.5 hidden sm:flex items-center gap-1 text-[10px] sm:text-xs text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity"
                     >
                       <Sparkles className="w-3 h-3" />
                       <span>Klik untuk bertanya</span>
@@ -161,11 +161,11 @@ export default function Home() {
               animate={{ opacity: 1 }}
               className="space-y-4"
             >
-              {/* Header */}
+              {/* Header - Hidden on Mobile due to Mobile Header Bar */}
               <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-center mb-6 mt-2 space-y-1"
+                className="text-center mb-6 mt-2 space-y-1 hidden md:block"
               >
                 <h1 className="text-2xl font-bold gradient-text">
                   AKASIA
@@ -212,5 +212,6 @@ export default function Home() {
 
       <ChatInput onSend={handleSend} />
     </div>
+
   )
 }

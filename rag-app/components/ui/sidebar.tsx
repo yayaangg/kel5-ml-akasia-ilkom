@@ -107,10 +107,20 @@ export function Sidebar() {
 
     return (
         <>
+            {/* Mobile Header Bar */}
+            <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-slate-950/80 backdrop-blur-md border-b border-white/10 z-40 flex items-center justify-between px-4">
+                <div className="w-10 h-10" /> {/* Spacer for menu button on the left */}
+                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 select-none">
+                    AKASIA
+                </span>
+                <div className="w-10 h-10" /> {/* Spacer to center the title */}
+            </div>
+
             {/* Mobile menu button */}
             <button
                 onClick={() => setMobileOpen(!mobileOpen)}
-                className="md:hidden fixed top-4 left-4 z-[60] p-2 rounded-lg bg-slate-900/90 border border-white/10 text-white"
+                className="md:hidden fixed top-3 left-4 z-[60] p-2 rounded-lg hover:bg-white/5 text-white transition-colors"
+                aria-label="Toggle Menu"
             >
                 {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -118,7 +128,7 @@ export function Sidebar() {
             {/* Mobile overlay */}
             {mobileOpen && (
                 <div
-                    className="md:hidden fixed inset-0 bg-black/50 z-40"
+                    className="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
                     onClick={() => setMobileOpen(false)}
                 />
             )}
@@ -131,6 +141,7 @@ export function Sidebar() {
                 )}
                 initial={{ x: -300 }}
                 animate={{ x: mobileOpen ? 0 : -300 }}
+                transition={{ type: "spring", stiffness: 200, damping: 25 }}
             >
                 <SidebarContent />
             </motion.div>
