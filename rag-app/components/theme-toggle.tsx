@@ -1,7 +1,7 @@
 "use client"
 
 /**
- * ThemeToggle - AKASIA
+ * ThemeToggle - AKASIA v2.4
  * Toggle button for dark/light mode
  */
 

@@ -1,10 +1,45 @@
+/* * ============================================
+ * AKASIA v2.4 - Global Styles
+ * Asisten Akademik Berbasis AI untuk UHO
+ * ============================================
+ * Warna tema: Biru-Ungu Modern
+ * Optimized for smooth 60fps animations
+ * + Dark/Light Mode Support
+ * ============================================
+ */
+
 @import "tailwindcss";
 
+/* ============================================
+ * CSS Variables - Variabel Warna Utama 
+ * ============================================ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0f0f1a;
+  --foreground: #ededed;
+
+  /* Warna Aksen Biru-Ungu */
+  --primary-blue: #3b82f6;
+  --primary-purple: #8b5cf6;
+  --primary-cyan: #06b6d4;
+  --primary-pink: #ec4899;
+
+  /* Warna Latar Belakang */
+  --bg-dark: #0a0a12;
+  --bg-card: rgba(15, 15, 26, 0.8);
+  --bg-hover: rgba(255, 255, 255, 0.05);
+
+  /* Border */
+  --border-subtle: rgba(255, 255, 255, 0.1);
+
+  /* Timing Functions */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+/* ============================================
+ * Theme Configuration
+ * ============================================ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -12,15 +47,468 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* ============================================
+ * Dark Mode (Default)
+ * ============================================ */
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #0a0a12;
     --foreground: #ededed;
   }
 }
 
+/* ============================================
+ * Light Mode - v2.4
+ * ============================================ */
+:root.light {
+  --background: #f8fafc;
+  --foreground: #1e293b;
+  --bg-dark: #f1f5f9;
+  --bg-card: rgba(255, 255, 255, 0.9);
+  --bg-hover: rgba(0, 0, 0, 0.05);
+  --border-subtle: rgba(0, 0, 0, 0.1);
+}
+
+.light body {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+}
+
+.light .aurora-bg::before,
+.light .aurora-bg::after {
+  opacity: 0.3;
+}
+
+.light .glass {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+}
+
+.light .text-white { color: #1e293b !important; }
+.light .text-slate-100 { color: #334155 !important; }
+.light .text-slate-200 { color: #475569 !important; }
+.light .text-slate-300 { color: #64748b !important; }
+.light .text-slate-400 { color: #94a3b8 !important; }
+
+/* FIX AREA INPUT & SIDEBAR LIGHT MODE */
+.light .bg-slate-900\/50,
+.light .bg-slate-900\/60,
+.light .bg-slate-800\/50,
+.light .bg-slate-800\/30,
+.light [class*="bg-slate-950"],
+.light [class*="bg-slate-900"] {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Memaksa elemen form/container bar input chat paling bawah agar memutih */
+.light form,
+.light div:has(> input[placeholder*="Tanyakan"]),
+.light div:has(> textarea[placeholder*="Tanyakan"]) {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Memastikan text input murni transparan melebur dengan container putihnya */
+.light input,
+.light textarea {
+  background: transparent !important;
+  background-color: transparent !important;
+  color: #1e293b !important;
+}
+
+.light input::placeholder,
+.light textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+.light .border-slate-700\/50,
+.light .border-slate-700 {
+  border-color: rgba(0, 0, 0, 0.15) !important;
+}
+
+
+/* ============================================
+ * Base Styles - Gaya Dasar
+ * ============================================ */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+}
+
+/* ============================================
+ * Aurora Background - Latar Belakang Gradien
+ * GPU-accelerated with will-change
+ * ============================================ */
+.aurora-bg {
+  position: relative;
+  background: linear-gradient(135deg, #0a0a12 0%, #0f0f1a 50%, #0a0a12 100%);
+}
+
+.aurora-bg::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(139, 92, 246, 0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 50% 30% at 50% 50%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+  will-change: opacity;
+}
+
+/* Animasi Aurora Subtle - GPU Optimized */
+.aurora-bg::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(59, 130, 246, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 40%);
+  animation: aurora-float 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform, opacity;
+}
+
+@keyframes aurora-float {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  33% {
+    opacity: 0.7;
+    transform: translate3d(2%, -1%, 0) scale(1.02);
+  }
+
+  66% {
+    opacity: 0.6;
+    transform: translate3d(-1%, 1%, 0) scale(0.98);
+  }
+}
+
+/* ============================================
+ * Smooth Scrollbar - Scrollbar Halus
+ * ============================================ */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--primary-blue) 0%, var(--primary-purple) 100%);
+  border-radius: 3px;
+  transition: background 0.3s var(--ease-smooth);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--primary-purple) 0%, var(--primary-pink) 100%);
+}
+
+/* ============================================
+ * Glass Morphism - Efek Kaca Modern
+ * ============================================ */
+.glass {
+  background: rgba(15, 15, 26, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow:
+    0 4px 30px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.glass-hover {
+  transition: all 0.3s var(--ease-smooth);
+}
+
+.glass-hover:hover {
+  background: rgba(15, 15, 26, 0.85);
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================
+ * Gradient Text - Teks Gradien Animasi
+ * ============================================ */
+.gradient-text {
+  background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-purple) 50%, var(--primary-cyan) 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradient-shift 8s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ============================================
+ * Glow Effects - Efek Cahaya Modern
+ * ============================================ */
+.glow-blue {
+  box-shadow:
+    0 0 20px rgba(59, 130, 246, 0.3),
+    0 0 40px rgba(59, 130, 246, 0.1);
+}
+
+.glow-purple {
+  box-shadow:
+    0 0 20px rgba(139, 92, 246, 0.3),
+    0 0 40px rgba(139, 92, 246, 0.1);
+}
+
+.glow-gradient {
+  box-shadow:
+    0 0 20px rgba(59, 130, 246, 0.2),
+    0 0 40px rgba(139, 92, 246, 0.15),
+    0 0 60px rgba(6, 182, 212, 0.1);
+}
+
+/* ============================================
+ * Micro Animations - Animasi Halus
+ * GPU-accelerated untuk performa optimal
+ * ============================================ */
+
+/* Fade In Up */
+.animate-fade-up {
+  animation: fadeUp 0.5s var(--ease-spring) forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+/* Fade In Scale */
+.animate-fade-scale {
+  animation: fadeScale 0.4s var(--ease-spring) forwards;
+}
+
+@keyframes fadeScale {
+  from {
+    opacity: 0;
+    transform: scale3d(0.95, 0.95, 1);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+/* Pulse Ring */
+.animate-pulse-ring {
+  position: relative;
+}
+
+.animate-pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  border: 2px solid var(--primary-purple);
+  opacity: 0;
+  animation: pulseRing 2s var(--ease-smooth) infinite;
+}
+
+@keyframes pulseRing {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.2);
+  }
+}
+
+/* Shimmer Effect */
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,
+      transparent,
+      rgba(255, 255, 255, 0.08),
+      transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
+}
+
+/* ============================================
+ * Button Animations - Animasi Tombol
+ * ============================================ */
+.btn-glow {
+  position: relative;
+  transition: all 0.3s var(--ease-smooth);
+}
+
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple), var(--primary-cyan));
+  border-radius: inherit;
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 0.3s var(--ease-smooth);
+  filter: blur(10px);
+}
+
+.btn-glow:hover::before {
+  opacity: 0.6;
+}
+
+.btn-glow:hover {
+  transform: translateY(-2px);
+}
+
+.btn-glow:active {
+  transform: translateY(0);
+}
+
+/* ============================================
+ * Typing Indicator - Indikator Mengetik
+ * ============================================ */
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-blue), var(--primary-purple));
+  animation: typingBounce 1.4s ease-in-out infinite;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+  0%,
+  60%,
+  100% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0.5;
+  }
+
+  30% {
+    transform: translate3d(0, -10px, 0);
+    opacity: 1;
+  }
+}
+
+/* ============================================
+ * Card Hover - Efek Hover Kartu
+ * ============================================ */
+.card-interactive {
+  transition: all 0.3s var(--ease-smooth);
+  transform-style: preserve-3d;
+  perspective: 1000px;
+}
+
+.card-interactive:hover {
+  transform: translateY(-4px) rotateX(2deg);
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(139, 92, 246, 0.1);
+}
+
+/* ============================================
+ * Input Focus Effect - Efek Focus Input
+ * ============================================ */
+.input-glow {
+  transition: all 0.3s var(--ease-smooth);
+}
+
+.input-glow:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(139, 92, 246, 0.3),
+    0 0 20px rgba(139, 92, 246, 0.15);
+  border-color: var(--primary-purple);
+}
+
+/* ============================================
+ * Selection - Seleksi Teks
+ * ============================================ */
+::selection {
+  background: rgba(139, 92, 246, 0.4);
+  color: #ffffff;
+}
+
+/* ============================================
+ * Reduce Motion - Aksesibilitas
+ * ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
