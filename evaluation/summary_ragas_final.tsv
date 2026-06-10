@@ -1,0 +1,14 @@
+metric	average_score	min_score	max_score	count	interpretation	notes
+Faithfulness	0.8879	0.0	1.0	29	Jawaban chatbot patuh pada konteks (Complete rows only)	Rerata dari baris status Complete
+Response Relevancy	0.8228	0.1708	1.0	30	Jawaban sesuai dengan pertanyaan (Complete rows only)	Rerata dari baris status Complete
+Context Precision	0.6317	0.0	1.0	29	Presisi konteks yang terambil (Complete rows only)	Rerata dari baris status Complete
+Context Recall	0.8833	0.0	1.0	30	Kelengkapan informasi ground truth yang terambil (Complete rows only)	Rerata dari baris status Complete
+Latency	27.882	12.915	38.727	32	Rata-rata waktu respons chatbot (All answered rows)	Diambil dari log kueri
+Total Sample	32				Total sampel pertanyaan	Ditargetkan: 32
+Complete Rows Count	30				Baris dengan semua metrik terisi penuh	
+Partial Rows Count	2				Baris dengan metrik terisi sebagian	
+Failed Rows Count	0				Baris gagal atau hilang dari dataset	Failed: 0, Missing: 0
+Missing faithfulness IDs	80			1	ID pertanyaan dengan metrik faithfulness kosong	
+Missing context_precision IDs	70			1	ID pertanyaan dengan metrik context_precision kosong	
+Missing context_recall IDs	None			0	ID pertanyaan dengan metrik context_recall kosong	
+Missing response_relevancy IDs	None			0	ID pertanyaan dengan metrik response_relevancy kosong	

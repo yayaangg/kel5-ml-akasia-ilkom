@@ -39,7 +39,15 @@ class RAGEngine:
     def __init__(self):
         self.embeddings = self._get_embeddings()
         self.vectorstore = self.load_existing_vectorstore()
-        self.client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        
+        # Parse multiple keys from environment for fallback support
+        keys_str = os.environ.get("GROQ_API_KEYS", os.environ.get("GROQ_API_KEY", ""))
+        self.api_keys = [k.strip() for k in keys_str.split(",") if k.strip()]
+        self.current_key_idx = 0
+        if not self.api_keys:
+            raise ValueError("No GROQ API keys found in environment")
+            
+        self.client = Groq(api_key=self.api_keys[self.current_key_idx])
         self.llm_model = "llama-3.1-8b-instant"
         self.fallback_model = "llama-3.3-70b-versatile"
         self.metadata = self.load_metadata()
@@ -831,8 +839,12 @@ class RAGEngine:
 
     def _call_llm(self, messages, stream=False, max_retries=2):
         models = [self.llm_model, self.fallback_model]
+        
+        # Override retries to try all keys if rate limited
+        total_attempts = len(self.api_keys) * max_retries
+        
         for model in models:
-            for attempt in range(max_retries):
+            for attempt in range(total_attempts):
                 try:
                     return self.client.chat.completions.create(
                         model=model,
@@ -844,12 +856,149 @@ class RAGEngine:
                     )
                 except Exception as e:
                     if "rate_limit" in str(e).lower() or "429" in str(e):
-                        if attempt < max_retries - 1:
+                        print(f"⚠️ Rate limit reached on key {self.current_key_idx + 1}/{len(self.api_keys)} with model {model}. Switching key...")
+                        # Switch API Key
+                        self.current_key_idx = (self.current_key_idx + 1) % len(self.api_keys)
+                        self.client = Groq(api_key=self.api_keys[self.current_key_idx])
+                        
+                        if attempt < total_attempts - 1:
                             time.sleep(1)
                             continue
                         break
                     raise e
-        raise Exception("Semua model sedang sibuk. Coba lagi.")
+        raise Exception("Semua model sedang sibuk atau limit tercapai. Coba lagi.")
+
+    def query_for_evaluation(self, question):
+        """
+        Non-streaming RAG query untuk evaluasi.
+        Menjalankan pipeline yang SAMA dengan query_stream() tetapi mengembalikan
+        satu dictionary utuh alih-alih streaming chunks.
+        
+        Returns:
+            dict: {
+                "generated_answer": str,
+                "retrieved_contexts": list[str],
+                "source_documents": list[str],
+                "citations": list[str],
+                "confidence": float
+            }
+        """
+        self.refresh_vectorstore()
+        
+        if not self.vectorstore:
+            return {
+                "generated_answer": "Knowledge base belum tersedia.",
+                "retrieved_contexts": [],
+                "source_documents": [],
+                "citations": [],
+                "confidence": 0
+            }
+        
+        # Apply synonym mapping early for better retrieval
+        question_expanded = self._apply_synonym_mapping(question)
+        
+        # ========================================
+        # STAGE 1: Multi-Query Retrieval
+        # ========================================
+        try:
+            hybrid_results = self._multi_query_retrieval(question, k=50, alpha=0.7)
+        except Exception as e:
+            try:
+                hybrid_results = self._hybrid_search(question_expanded, k=30, alpha=0.7)
+            except Exception as e2:
+                hybrid_results = [(doc, score, "semantic") 
+                                 for doc, score in self.vectorstore.similarity_search_with_score(question_expanded, k=30)]
+        
+        # ========================================
+        # STAGE 2: Cross-Encoder Neural Re-ranking
+        # ========================================
+        reranked_docs = self._cross_encoder_rerank(question, hybrid_results, top_k=12)
+        
+        # Extract cross-encoder scores for confidence calculation
+        cross_encoder_scores = [doc[3] for doc in reranked_docs] if reranked_docs else []
+        
+        # ========================================
+        # STAGE 3: Calculate Confidence Score
+        # ========================================
+        relevant_doc_contents = [doc[0] for doc in reranked_docs]
+        confidence = self._calculate_confidence(question, relevant_doc_contents, cross_encoder_scores)
+        
+        # ========================================
+        # STAGE 4: Build Context + Extract Metadata
+        # ========================================
+        context_parts = []
+        retrieved_contexts = []
+        source_documents = []
+        
+        for i, (doc, score, strategy, ce_score) in enumerate(reranked_docs, 1):
+            context_parts.append(f"=== BAGIAN {i} (skor: {ce_score:.2f}) ===\n{doc.page_content}")
+            retrieved_contexts.append(doc.page_content)
+            
+            # Extract source document name from metadata or page content
+            src = doc.metadata.get("source", "")
+            if src:
+                src_name = os.path.basename(src)
+            else:
+                # Fallback: extract from text content prefix e.g. [Sumber: 03_paduan-penyusunan-skripsi-fmipa.pdf]
+                match = re.search(r'\[Sumber:\s*([^,\]\s]+)', doc.page_content)
+                src_name = match.group(1).strip() if match else ""
+            
+            if src_name and src_name not in source_documents:
+                source_documents.append(src_name)
+        
+        context = "\n\n".join(context_parts)
+        if len(context) > 10000:
+            context = context[:10000]
+        
+        # Citations
+        citations = []
+        for doc, _, _, _ in reranked_docs[:3]:
+            citation = doc.page_content[:60].replace('[Sumber:', '').replace(']', '')
+            citations.append(citation + "...")
+        
+        # ========================================
+        # STAGE 5: LLM Call (non-streaming)
+        # ========================================
+        system_prompt = """Anda adalah AKASIA, Asisten Akademik ramah untuk Jurusan Ilmu Komputer.
+Anda berbicara dengan sopan dan membantu seperti Customer Service yang baik.
+
+TUGAS UTAMA:
+Bantu mahasiswa dengan menjawab pertanyaan akademik berdasarkan informasi yang tersedia.
+
+CARA MENJAWAB:
+1. Cari informasi yang relevan dari konteks yang diberikan
+2. Jawab LANGSUNG tanpa kata pembuka seperti "Berdasarkan informasi..." atau "Saya menemukan bahwa..."
+3. Cukup berikan jawaban singkat + sumber di akhir
+4. Maksimal 2 kalimat saja
+
+PENTING: 
+- Jangan mengarang informasi yang tidak ada
+- Gunakan bahasa yang sopan dan ramah
+- Bersikaplah seperti teman yang membantu"""
+
+        prompt = f"""INFORMASI AKADEMIK ILKOM:
+{context}
+
+---
+PERTANYAAN MAHASISWA: {question}
+
+Instruksi: Bantu mahasiswa dengan menjawab pertanyaannya. Jika ada informasi yang relevan, berikan jawaban yang jelas. Jika tidak ada, berikan respons ramah dengan saran yang membantu."""
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": prompt}
+        ]
+        
+        response = self._call_llm(messages, stream=False)
+        generated_answer = response.choices[0].message.content
+        
+        return {
+            "generated_answer": generated_answer,
+            "retrieved_contexts": retrieved_contexts,
+            "source_documents": source_documents,
+            "citations": citations,
+            "confidence": confidence
+        }
 
     def query_stream(self, question, history=None):
         """
