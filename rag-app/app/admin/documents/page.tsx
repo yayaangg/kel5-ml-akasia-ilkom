@@ -3,7 +3,13 @@
 import * as React from "react"
 import { UploadZone } from "@/components/admin/upload-zone"
 import { GlassCard } from "@/components/ui/glass-card"
-import { FileText, Trash2, RefreshCw, AlertCircle, CheckCircle } from "lucide-react"
+import {
+    FileText,
+    Trash2,
+    RefreshCw,
+    AlertCircle,
+    CheckCircle
+} from "lucide-react"
 
 interface Document {
     id: string
@@ -18,23 +24,50 @@ export default function DocumentsPage() {
     const [documents, setDocuments] = React.useState<Document[]>([])
     const [loading, setLoading] = React.useState(true)
     const [error, setError] = React.useState<string | null>(null)
-    const [deleteStatus, setDeleteStatus] = React.useState<{ id: string, status: 'loading' | 'success' | 'error' } | null>(null)
+
+    const [deleteStatus, setDeleteStatus] = React.useState<{
+        id: string
+        status: "loading" | "success" | "error"
+    } | null>(null)
+
     const [backendOnline, setBackendOnline] = React.useState(true)
 
+    const API =
+        process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
+    // =========================
+    // FETCH
+    // =========================
     const fetchData = async () => {
         setLoading(true)
         setError(null)
+
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents`)
-            if (!res.ok) {
-                throw new Error('Failed to fetch documents')
+            const token = localStorage.getItem("admin_token")
+
+            const res = await fetch(`${API}/api/documents`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            if (res.status === 401) {
+                throw new Error("Unauthorized (token invalid / missing)")
             }
+
+            if (!res.ok) {
+                throw new Error("Gagal mengambil data")
+            }
+
             const data = await res.json()
+
             setDocuments(data.documents || [])
             setBackendOnline(true)
-        } catch (err) {
-            setError('Tidak dapat terhubung ke backend. Pastikan Python API berjalan.')
+
+        } catch (err: any) {
+            setError(err.message)
             setBackendOnline(false)
+
         } finally {
             setLoading(false)
         }
@@ -44,62 +77,110 @@ export default function DocumentsPage() {
         fetchData()
     }, [])
 
+    // =========================
+    // DELETE
+    // =========================
     const handleDelete = async (docId: string) => {
-        if (!confirm('Yakin ingin menghapus dokumen ini?')) return
+        if (!confirm("Yakin ingin menghapus dokumen ini?")) return
 
-        setDeleteStatus({ id: docId, status: 'loading' })
+        setDeleteStatus({ id: docId, status: "loading" })
+
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/documents/${docId}`, {
-                method: 'DELETE'
-            })
-            if (!res.ok) throw new Error('Delete failed')
+            const token = localStorage.getItem("admin_token")
 
-            setDeleteStatus({ id: docId, status: 'success' })
+            const res = await fetch(
+                `${API}/api/documents/${docId}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
+
+            if (res.status === 401) {
+                throw new Error("Unauthorized")
+            }
+
+            if (!res.ok) {
+                throw new Error("Delete gagal")
+            }
+
+            setDeleteStatus({ id: docId, status: "success" })
+
             setTimeout(() => {
                 setDeleteStatus(null)
-                fetchData() // Refresh list
+                fetchData()
             }, 1000)
-        } catch {
-            setDeleteStatus({ id: docId, status: 'error' })
+
+        } catch (err: any) {
+            setDeleteStatus({ id: docId, status: "error" })
+
             setTimeout(() => setDeleteStatus(null), 2000)
         }
     }
 
+    // =========================
+    // FORMAT SIZE
+    // =========================
     const formatBytes = (bytes: number) => {
-        if (bytes === 0) return '0 B'
+        if (!bytes) return "0 B"
+
         const k = 1024
-        const sizes = ['B', 'KB', 'MB', 'GB']
+        const sizes = ["B", "KB", "MB", "GB"]
         const i = Math.floor(Math.log(bytes) / Math.log(k))
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+
+        return (
+            parseFloat((bytes / Math.pow(k, i)).toFixed(2)) +
+            " " +
+            sizes[i]
+        )
     }
 
+    // =========================
+    // UI
+    // =========================
     return (
         <div className="p-6 lg:p-8 pb-32 space-y-8">
+
+            {/* HEADER */}
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
                         Manajemen Dokumen
                     </h1>
-                    <p className="text-slate-400 mt-1">Upload dan kelola dokumen basis pengetahuan AI</p>
+                    <p className="text-slate-400 mt-1">
+                        Upload dan kelola dokumen basis pengetahuan AI
+                    </p>
                 </div>
-                <div className="flex gap-3">
-                    <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${backendOnline
-                        ? 'bg-green-500/10 border border-green-500/20 text-green-400'
-                        : 'bg-red-500/10 border border-red-500/20 text-red-400'
-                        }`}>
-                        <div className={`w-2 h-2 rounded-full ${backendOnline ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
-                        {backendOnline ? 'System Online' : 'Backend Offline'}
-                    </div>
+
+                <div
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm ${
+                        backendOnline
+                            ? "bg-green-500/10 border border-green-500/20 text-green-400"
+                            : "bg-red-500/10 border border-red-500/20 text-red-400"
+                    }`}
+                >
+                    <div
+                        className={`w-2 h-2 rounded-full ${
+                            backendOnline
+                                ? "bg-green-500 animate-pulse"
+                                : "bg-red-500"
+                        }`}
+                    />
+                    {backendOnline ? "System Online" : "Backend Offline"}
                 </div>
             </div>
 
+            {/* ERROR */}
             {error && (
                 <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl">
                     <AlertCircle className="w-5 h-5 text-red-400" />
                     <p className="text-red-400">{error}</p>
+
                     <button
                         onClick={fetchData}
-                        className="ml-auto px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 text-sm transition-colors"
+                        className="ml-auto px-4 py-2 bg-red-500/20 hover:bg-red-500/30 rounded-lg text-red-400 text-sm"
                     >
                         Coba Lagi
                     </button>
@@ -107,20 +188,30 @@ export default function DocumentsPage() {
             )}
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* Left: Document List */}
+
+                {/* LEFT */}
                 <div className="lg:col-span-2 space-y-4">
+
                     <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-white">Daftar Dokumen</h2>
+                        <h2 className="text-xl font-bold text-white">
+                            Daftar Dokumen
+                        </h2>
+
                         <button
                             onClick={fetchData}
-                            className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white text-sm transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-slate-400 hover:text-white text-sm"
                         >
-                            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+                            <RefreshCw
+                                className={`w-4 h-4 ${
+                                    loading ? "animate-spin" : ""
+                                }`}
+                            />
                             Refresh
                         </button>
                     </div>
 
                     <GlassCard className="p-0 overflow-hidden">
+
                         {loading ? (
                             <div className="p-8 text-center text-slate-400">
                                 <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2" />
@@ -129,70 +220,82 @@ export default function DocumentsPage() {
                         ) : documents.length === 0 ? (
                             <div className="p-8 text-center text-slate-400">
                                 <FileText className="w-10 h-10 mx-auto mb-3 opacity-50" />
-                                <p>Belum ada dokumen yang diupload</p>
+                                Belum ada dokumen
                             </div>
                         ) : (
                             <table className="w-full text-left">
-                                <thead className="bg-white/5 text-slate-400 text-xs uppercase tracking-wider">
+
+                                <thead className="bg-white/5 text-slate-400 text-xs uppercase">
                                     <tr>
-                                        <th className="p-4">Nama Dokumen</th>
+                                        <th className="p-4">Nama</th>
                                         <th className="p-4">Ukuran</th>
                                         <th className="p-4">Status</th>
-                                        <th className="p-4 text-right">Aksi</th>
+                                        <th className="p-4 text-right">
+                                            Aksi
+                                        </th>
                                     </tr>
                                 </thead>
+
                                 <tbody className="divide-y divide-white/5 text-sm">
+
                                     {documents.map((doc) => (
-                                        <tr key={doc.id} className="text-slate-300 hover:bg-white/5 transition-colors">
-                                            <td className="p-4 font-medium text-white flex items-center gap-3">
-                                                <FileText className="w-4 h-4 text-blue-400 flex-shrink-0" />
-                                                <div className="truncate max-w-[200px] sm:max-w-xs md:max-w-md" title={doc.filename}>
-                                                    <div className="truncate">{doc.filename}</div>
-                                                    <div className="text-xs text-slate-500">{doc.chunks_count} chunks</div>
-                                                </div>
+                                        <tr
+                                            key={doc.id}
+                                            className="hover:bg-white/5"
+                                        >
+                                            <td className="p-4 text-white flex items-center gap-2">
+                                                <FileText className="w-4 h-4 text-blue-400" />
+                                                {doc.filename}
                                             </td>
-                                            <td className="p-4 text-slate-400 whitespace-nowrap">{formatBytes(doc.size_bytes)}</td>
+
+                                            <td className="p-4 text-slate-400">
+                                                {formatBytes(doc.size_bytes)}
+                                            </td>
+
                                             <td className="p-4">
-                                                <span className={`px-2 py-1 rounded-full text-xs border ${doc.status === "indexed"
-                                                    ? "bg-green-500/10 border-green-500/20 text-green-400"
-                                                    : "bg-yellow-500/10 border-yellow-500/20 text-yellow-400"
-                                                    }`}>
-                                                    {doc.status === 'indexed' ? 'Terindeks' : doc.status}
+                                                <span className="px-2 py-1 text-xs rounded-full bg-green-500/10 text-green-400">
+                                                    {doc.status}
                                                 </span>
                                             </td>
+
                                             <td className="p-4 text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    {deleteStatus?.id === doc.id ? (
-                                                        deleteStatus.status === 'loading' ? (
-                                                            <RefreshCw className="w-4 h-4 animate-spin text-slate-400" />
-                                                        ) : deleteStatus.status === 'success' ? (
-                                                            <CheckCircle className="w-4 h-4 text-green-400" />
-                                                        ) : (
-                                                            <AlertCircle className="w-4 h-4 text-red-400" />
-                                                        )
+                                                {deleteStatus?.id === doc.id ? (
+                                                    deleteStatus.status === "loading" ? (
+                                                        <RefreshCw className="w-4 h-4 animate-spin" />
+                                                    ) : deleteStatus.status === "success" ? (
+                                                        <CheckCircle className="w-4 h-4 text-green-400" />
                                                     ) : (
-                                                        <button
-                                                            onClick={() => handleDelete(doc.id)}
-                                                            className="p-2 hover:bg-red-500/10 rounded-lg text-slate-400 hover:text-red-400 transition-colors"
-                                                        >
-                                                            <Trash2 className="w-4 h-4" />
-                                                        </button>
-                                                    )}
-                                                </div>
+                                                        <AlertCircle className="w-4 h-4 text-red-400" />
+                                                    )
+                                                ) : (
+                                                    <button
+                                                        onClick={() =>
+                                                            handleDelete(doc.id)
+                                                        }
+                                                        className="text-red-400 hover:text-red-300"
+                                                    >
+                                                        <Trash2 className="w-4 h-4" />
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
+
                                 </tbody>
                             </table>
                         )}
                     </GlassCard>
                 </div>
 
-                {/* Right: Upload Zone */}
+                {/* RIGHT */}
                 <div className="space-y-4">
-                    <h2 className="text-xl font-bold text-white">Upload Baru</h2>
+                    <h2 className="text-xl font-bold text-white">
+                        Upload Baru
+                    </h2>
+
                     <UploadZone onUploadComplete={fetchData} />
                 </div>
+
             </div>
         </div>
     )
