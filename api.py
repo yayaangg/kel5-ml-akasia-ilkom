@@ -15,7 +15,14 @@ Server akan berjalan di http://localhost:8000
 ============================================
 """
 
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import (
+    FastAPI,
+    HTTPException,
+    UploadFile,
+    File,
+    Depends,
+    Header
+)
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,6 +35,10 @@ import os
 import json
 import asyncio
 from app import extract_text_from_pdf
+from jose import jwt, JWTError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Inisialisasi FastAPI dengan metadata
 app = FastAPI(
@@ -52,8 +63,92 @@ app.add_middleware(
 
 engine = RAGEngine()
 
+ADMIN_USERNAME = os.getenv("ADMIN_USERNAME")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
+
+JWT_SECRET = os.getenv("JWT_SECRET")
+JWT_ALGORITHM = "HS256"
+
 class ChatRequest(BaseModel):
     message: str
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+
+def verify_admin(
+    authorization: str = Header(None)
+):
+    if not authorization:
+        raise HTTPException(
+            status_code=401,
+            detail="Token tidak ditemukan"
+        )
+
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=401,
+            detail="Format token salah"
+        )
+
+    token = authorization.replace("Bearer ", "")
+
+    try:
+        payload = jwt.decode(
+            token,
+            JWT_SECRET,
+            algorithms=[JWT_ALGORITHM]
+        )
+
+        if payload.get("role") != "admin":
+            raise HTTPException(
+                status_code=403,
+                detail="Akses ditolak"
+            )
+
+        return payload
+
+    except JWTError:
+        raise HTTPException(
+            status_code=401,
+            detail="Token tidak valid"
+        )
+    
+@app.post("/api/admin/login")
+async def admin_login(req: LoginRequest):
+
+    if (
+        req.username != ADMIN_USERNAME
+        or
+        req.password != ADMIN_PASSWORD
+    ):
+        raise HTTPException(
+            status_code=401,
+            detail="Username atau password salah"
+        )
+
+    token = jwt.encode(
+        {
+            "role": "admin",
+            "exp": datetime.utcnow() + timedelta(hours=12)
+        },
+        JWT_SECRET,
+        algorithm=JWT_ALGORITHM
+    )
+
+    return {
+        "status": "success",
+        "token": token
+    }
+
+@app.get("/api/admin/me")
+async def admin_me(
+    admin=Depends(verify_admin)
+):
+    return {
+        "authenticated": True,
+        "role": "admin"
+    }
 
 @app.get("/api/health")
 async def health_check():
@@ -75,7 +170,7 @@ async def chat(request: ChatRequest):
     return StreamingResponse(generate(), media_type="application/x-ndjson")
 
 @app.post("/api/upload")
-async def upload_files(files: List[UploadFile] = File(...)):
+async def upload_files(files: List[UploadFile] = File(...), admin=Depends(verify_admin)):
     all_text = ""
     processed_count = 0
     total_size = 0
@@ -131,13 +226,13 @@ async def upload_files(files: List[UploadFile] = File(...)):
     raise HTTPException(status_code=500, detail="Failed to process documents")
 
 @app.get("/api/documents")
-async def get_documents():
+async def get_documents(admin=Depends(verify_admin)):
     """Get list of all uploaded documents"""
     documents = engine.get_documents()
     return {"documents": documents}
 
 @app.delete("/api/documents/{doc_id}")
-async def delete_document(doc_id: str):
+async def delete_document(doc_id: str, admin=Depends(verify_admin)):
     """Delete a document by ID"""
     success = engine.delete_document(doc_id)
     if success:
@@ -145,7 +240,7 @@ async def delete_document(doc_id: str):
     raise HTTPException(status_code=404, detail="Document not found")
 
 @app.get("/api/stats")
-async def get_stats():
+async def get_stats(admin=Depends(verify_admin)):
     """Get statistics for admin dashboard"""
     stats = engine.get_stats()
     
@@ -159,7 +254,7 @@ async def get_stats():
     return stats
 
 @app.post("/api/clear-knowledge-base")
-async def clear_knowledge_base():
+async def clear_knowledge_base(admin=Depends(verify_admin)):
     """Clear all documents and reset the knowledge base"""
     try:
         # Clear vectorstore
@@ -223,7 +318,7 @@ async def submit_feedback(req: FeedbackRequest):
     return {"status": "success", "message": "Feedback submitted successfully"}
 
 @app.get("/api/feedback/stats")
-async def get_feedback_stats():
+async def get_feedback_stats(admin=Depends(verify_admin)):
     feedbacks = load_feedback()
     total = len(feedbacks)
     thumbs_up = sum(1 for f in feedbacks if f["rating"] == "up")
@@ -242,7 +337,7 @@ async def get_feedback_stats():
     }
 
 @app.get("/api/analytics")
-async def get_analytics():
+async def get_analytics(admin=Depends(verify_admin)):
     query_history = engine.metadata.get("query_history", [])
     now = datetime.now()
     
