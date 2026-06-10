@@ -1,18 +1,17 @@
 "use client"
 
 /**
- * Landing Page - AKASIA v2.5
+ * Landing Page - AKASIA v2.4
  * AI-Themed Modern Landing with Neural Network Animations
+ * Scope: FMIPA UHO
  */
 
 import * as React from "react"
 import Link from "next/link"
-import { motion, useMotionValue, useTransform, useSpring } from "framer-motion"
+import { motion } from "framer-motion"
 import {
-    GraduationCap, MessageSquare, FileText, BarChart3,
-    Sparkles, ArrowRight, BookOpen, Clock, Shield, Zap,
-    ChevronRight, Brain, Cpu, Network, BrainCircuit,
-    Bot, Wand2, CircuitBoard
+    GraduationCap, BarChart3, Sparkles, ArrowRight, BookOpen, Clock, Shield, Zap,
+    ChevronRight, Brain, Cpu, Network, BrainCircuit, Bot, Wand2, CircuitBoard
 } from "lucide-react"
 
 // Neural Network Animation Background
@@ -300,7 +299,7 @@ export default function LandingPage() {
                         className="text-lg text-slate-400 max-w-2xl mx-auto mb-12 flex items-center justify-center gap-2"
                     >
                         <Bot className="w-5 h-5 text-purple-400" />
-                        AI Chatbot yang menjawab pertanyaan akademik UHO dengan akurat
+                        AI Chatbot yang menjawab pertanyaan akademik FMIPA UHO dengan akurat
                     </motion.p>
 
                     {/* CTA Buttons */}
@@ -467,7 +466,7 @@ export default function LandingPage() {
                                 </h3>
                                 <p className="text-slate-400 mb-8 text-lg">
                                     Tanyakan tentang masa studi, syarat kelulusan, prosedur cuti akademik,
-                                    atau jadwal kalender akademik UHO.
+                                    atau jadwal kalender akademik FMIPA UHO.
                                 </p>
                                 <Link href="/chat">
                                     <motion.button
@@ -521,7 +520,7 @@ export default function LandingPage() {
                                         <div className="bg-slate-800/60 rounded-2xl rounded-tl-none px-5 py-4 text-sm text-slate-200 border border-slate-700/50">
                                             <p className="mb-2">Masa studi maksimal program sarjana (S1) adalah <strong className="text-white">7 tahun akademik</strong> dengan beban studi minimal 144 SKS.</p>
                                             <div className="flex items-center gap-2 text-xs">
-                                                <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full">📄 Sumber: Pasal 44</span>
+                                                <span className="px-2 py-1 bg-blue-500/20 text-blue-400 rounded-full">📄 Sumber: Peraturan Akademik FMIPA</span>
                                                 <span className="px-2 py-1 bg-green-500/20 text-green-400 rounded-full">✓ 75%</span>
                                             </div>
                                         </div>
@@ -547,10 +546,10 @@ export default function LandingPage() {
                         <span className="text-2xl font-bold gradient-text">AKASIA</span>
                     </motion.div>
                     <p className="text-slate-400 mb-4">
-                        Asisten Akademik Berbasis AI untuk Universitas Halu Oleo
+                        Asisten Akademik Berbasis AI untuk FMIPA Universitas Halu Oleo
                     </p>
                     <p className="text-slate-600 text-sm">
-                        © 2025 AKASIA v2.5 • Built with Next.js, FastAPI, LangChain & Groq AI
+                        © 2025 AKASIA v2.4 • Built with Next.js, FastAPI, LangChain & Groq AI
                     </p>
                 </div>
             </footer>
