@@ -23,10 +23,498 @@
       "uploaded_at": "2026-06-04T04:14:06.691653",
       "status": "indexed",
       "chunks_count": 128
+    },
+    {
+      "id": "12ebb12c-bcd6-4408-857d-abdb214c4293",
+      "filename": "kebijakan-rektor-universitas-halu-oleo-terkait-peraturan-akademik-di-universitas-halu-oleo-1720147116-unNjzUNXt6.pdf",
+      "size_bytes": 851926,
+      "uploaded_at": "2026-06-10T19:29:24.377010",
+      "status": "indexed",
+      "chunks_count": 259
+    },
+    {
+      "id": "bee83fd3-dc90-43d5-9ac1-ac0031b4f597",
+      "filename": "lam-1762406049-3bihz8ZdKw.pdf",
+      "size_bytes": 92006,
+      "uploaded_at": "2026-06-10T19:29:42.252700",
+      "status": "indexed",
+      "chunks_count": 6
+    },
+    {
+      "id": "375bb7d1-0cd9-458e-948c-5a221332ec65",
+      "filename": "RENSTRA-FMIPA-2020-2024.pdf",
+      "size_bytes": 1968943,
+      "uploaded_at": "2026-06-10T19:29:57.237177",
+      "status": "indexed",
+      "chunks_count": 293
+    },
+    {
+      "id": "0897d1e4-8860-471a-8f7b-c2c1c453445d",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-biologi-pada-program-sarjana-universitas-halu-oleo-1762407785-al0yM6zgiv.pdf",
+      "size_bytes": 606498,
+      "uploaded_at": "2026-06-10T19:29:58.667660",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "563ed9d1-f910-4bcf-b39e-6132095c7967",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-fisika-pada-program-magister-universitas-halu-oleo-1762740748-gYCuXmIhT4.pdf",
+      "size_bytes": 694282,
+      "uploaded_at": "2026-06-10T19:29:59.319684",
+      "status": "indexed",
+      "chunks_count": 1
+    },
+    {
+      "id": "99a63eb1-b321-4570-83fd-7a964e929554",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-fisika-pada-program-magister-universitas-halu-oleo-lamsama-1774438268-32pBlqofGV.pdf",
+      "size_bytes": 606655,
+      "uploaded_at": "2026-06-10T19:30:00.354631",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "2cdb7687-4de6-4f42-8a5f-7f4056ef89a1",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-fisika-pada-program-sarjana-universitas-halu-oleo-1762412713-vM4QWX43s7.pdf",
+      "size_bytes": 606474,
+      "uploaded_at": "2026-06-10T19:30:01.388516",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "a75d1478-2446-4fd7-ab09-49e2f9f62bef",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-geografi-pada-program-magister-universitas-halu-oleo-1762413088-1U1llTHi7O.pdf",
+      "size_bytes": 606672,
+      "uploaded_at": "2026-06-10T19:30:02.538765",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "14b7632c-6ed6-46bc-9bbf-7347c43c62e0",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-geografi-pada-program-sajarna-universitas-halu-oleo-1762413460-WAGSpMVCnP.pdf",
+      "size_bytes": 606677,
+      "uploaded_at": "2026-06-10T19:30:03.542005",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "7d2daf7e-3d64-4436-8194-1ef3b4fef5f2",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-ilmu-komputer-pada-program-sarjana-universitas-halu-oleo-1762429163-l8aUdHP8Jn.pdf",
+      "size_bytes": 243978,
+      "uploaded_at": "2026-06-10T19:30:03.838218",
+      "status": "indexed",
+      "chunks_count": 1
+    },
+    {
+      "id": "9b3ddf48-d744-4a63-8827-499aaa41e902",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-kimia-pada-program-magister-universitas-halu-oleo-1762429833-IzvYC8OrHN.pdf",
+      "size_bytes": 606689,
+      "uploaded_at": "2026-06-10T19:30:04.941030",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "d61e158a-1a7a-4c1d-8001-afcc8413a5f3",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-kimia-pada-program-sarjana-universitas-halu-oleo-1762429540-iEpwEutaWF.pdf",
+      "size_bytes": 606469,
+      "uploaded_at": "2026-06-10T19:30:05.997808",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "7423868d-b6a8-4fb6-bc44-70027ed11df8",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-oseanografi-pada-program-sarjana-universitas-halu-oleo-1762741102-nq9VXUL9ye.pdf",
+      "size_bytes": 751167,
+      "uploaded_at": "2026-06-10T19:30:06.634192",
+      "status": "indexed",
+      "chunks_count": 1
+    },
+    {
+      "id": "7fe58ee7-8aa1-44e7-833a-53ff13b88257",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-statistika-pada-program-sarjana-universitas-halu-oleo-1762432129-GsVQZ6kbHw.pdf",
+      "size_bytes": 606488,
+      "uploaded_at": "2026-06-10T19:30:07.655378",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "f8d202a3-3ff3-473f-b479-9398d9df2c89",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-statististika-pada-program-diploma-universitas-halu-oleo-1762412367-n3SqmsOhOX.pdf",
+      "size_bytes": 606646,
+      "uploaded_at": "2026-06-10T19:30:08.710226",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "2f5124f2-d599-424a-9969-966c31d875cf",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-teknik-geofisika-pada-program-sarjana-universitas-halu-oleo-1762432457-ImKIWK8AIT.pdf",
+      "size_bytes": 95647,
+      "uploaded_at": "2026-06-10T19:30:13.359020",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "ad43a570-7b11-4bdc-a0c3-e82d4ae9d7bb",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-teknik-geologi-pada-program-sarjana-universitas-halu-oleo-1762432762-pZUCdkDa8Q.pdf",
+      "size_bytes": 118994,
+      "uploaded_at": "2026-06-10T19:30:15.657165",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "f1612947-2421-456b-8020-6199be47c65d",
+      "filename": "salinan-sertifikat-akreditasi-program-studi-teknik-pertambangan-pada-program-sarjana-universitas-halu-oleo-1762406512-c7TI2Jy7sG.pdf",
+      "size_bytes": 113121,
+      "uploaded_at": "2026-06-10T19:30:18.553068",
+      "status": "indexed",
+      "chunks_count": 2
+    },
+    {
+      "id": "67e18538-6b02-45e4-89ab-64e2b600e655",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-bioteknologi-pada-program-sarjana-universitas-halu-oleo-1762408251-IDjmvvuvn8.pdf",
+      "size_bytes": 358497,
+      "uploaded_at": "2026-06-10T19:30:26.896777",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "000644cd-2394-4179-b77d-587965f50f36",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-fisika-pada-program-magister-universitas-halu-oleo-1762740644-BSI4MwEjTR.pdf",
+      "size_bytes": 115579,
+      "uploaded_at": "2026-06-10T19:30:27.738364",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "d71988e3-6769-4262-a9ea-68b804ccc0d5",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-fisika-pada-program-magister-universitas-halu-oleo-lamsama-1774437746-Rjxpxiq1gV.pdf",
+      "size_bytes": 1594405,
+      "uploaded_at": "2026-06-10T19:30:36.614981",
+      "status": "indexed",
+      "chunks_count": 11
+    },
+    {
+      "id": "9354684b-57db-4ec5-8237-a62c59820f4e",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-fisika-pada-program-sarjana-universitas-halu-oleo-1762412607-zLypufpJmi.pdf",
+      "size_bytes": 608512,
+      "uploaded_at": "2026-06-10T19:30:42.175536",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "37b999eb-9672-4530-b521-b87ec47299fc",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-geografi-pada-program-magister-universitas-halu-oleo-1762412997-UUKASPHj0R.pdf",
+      "size_bytes": 1172490,
+      "uploaded_at": "2026-06-10T19:30:49.292068",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "49fed2c8-6d0f-4186-a018-3103c53c6432",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-geografi-pada-program-sarjana-universitas-halu-oleo-1762413322-h3mjkQal6g.pdf",
+      "size_bytes": 1337902,
+      "uploaded_at": "2026-06-10T19:30:56.551689",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "a7790973-376d-4cb2-bab4-f1730f97ce52",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-ilmu-komputer-pada-program-sarjana-universitas-halu-oleo-1762429079-aCGFTo0Lez.pdf",
+      "size_bytes": 24742,
+      "uploaded_at": "2026-06-10T19:30:56.813575",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "5b0cc478-f47d-495d-a8a1-cc986268fe38",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-kimia-pada-program-magister-universitas-halu-oleo-1762429743-IKaZhZNfUs.pdf",
+      "size_bytes": 1228860,
+      "uploaded_at": "2026-06-10T19:31:03.893766",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "07412adc-aeee-4f20-9668-b03ba46542f9",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-kimia-pada-program-sarjana-universitas-halu-oleo-1762429453-FpJ883lQfl.pdf",
+      "size_bytes": 596797,
+      "uploaded_at": "2026-06-10T19:31:04.248785",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "e7301bd5-70e1-4e7f-82c7-bae6607fd948",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-matematika-pada-program-sarjana-universitas-halu-oleo-1762431704-icWGHvWwFY.pdf",
+      "size_bytes": 1274400,
+      "uploaded_at": "2026-06-10T19:31:12.407700",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "51caec7f-486a-47b0-af48-0464eb61cc15",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-statistika-pada-program-sarjana-universitas-halu-oleo-1762432043-VF7wt0Ab2n.pdf",
+      "size_bytes": 358864,
+      "uploaded_at": "2026-06-10T19:31:20.474013",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "53456f0a-0ff1-4e74-acb7-ae474a61fab2",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-statististika-pada-program-diploma-universitas-halu-oleo-1762412246-PY7Adxg8HH.pdf",
+      "size_bytes": 1355521,
+      "uploaded_at": "2026-06-10T19:31:28.501614",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "cd0ea766-8bf8-40ca-840e-542f264a3ea7",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-teknik-geofisika-pada-program-sarjana-universitas-halu-oleo-1762432357-Y16KWcgLKy.pdf",
+      "size_bytes": 96012,
+      "uploaded_at": "2026-06-10T19:31:34.565459",
+      "status": "indexed",
+      "chunks_count": 6
+    },
+    {
+      "id": "e6b99a2d-a4f2-4108-96a6-baa78d3c2b84",
+      "filename": "salinan-surat-keputusan-akreditasi-program-studi-teknik-geologi-pada-program-sarjana-universitas-halu-oleo-1762432673-uqhZhaZYhD.pdf",
+      "size_bytes": 91113,
+      "uploaded_at": "2026-06-10T19:31:40.541734",
+      "status": "indexed",
+      "chunks_count": 6
+    },
+    {
+      "id": "fd0f386d-98df-487d-bb8e-e564c311d908",
+      "filename": "SK-STRUKTUR-ORGANISASI-SERTA-DESKRIPSI-TUGAS-TANGGUNG-JAWAB.pdf",
+      "size_bytes": 2756661,
+      "uploaded_at": "2026-06-10T19:32:48.197683",
+      "status": "indexed",
+      "chunks_count": 76
+    },
+    {
+      "id": "c8f0be8e-c437-4d79-9e2e-5dd06d394db4",
+      "filename": "sop-evaluasi-beban-kerja-dosen-1719027298-mzMlhjIhp5.pdf",
+      "size_bytes": 197112,
+      "uploaded_at": "2026-06-10T19:32:49.681511",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "972ed7fe-9b15-47e3-8f8f-eb4aa3361de2",
+      "filename": "sop-evaluasi-mahasiswa-magang-1719228120-acp1BMPW8X.pdf",
+      "size_bytes": 226325,
+      "uploaded_at": "2026-06-10T19:32:50.246027",
+      "status": "indexed",
+      "chunks_count": 11
+    },
+    {
+      "id": "4912eabb-7063-4d9a-af5d-8e9acb10343f",
+      "filename": "sop-layanan-cuti-akademik-1719018299-DjABx6CIN7.pdf",
+      "size_bytes": 212202,
+      "uploaded_at": "2026-06-10T19:32:52.083595",
+      "status": "indexed",
+      "chunks_count": 18
+    },
+    {
+      "id": "8b51b0f4-c33d-41aa-89f6-f00995b1311b",
+      "filename": "sop-layanan-jadwal-perkuliahan-1719228269-JgUzoBn5n6.pdf",
+      "size_bytes": 279684,
+      "uploaded_at": "2026-06-10T19:32:52.527397",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "20887193-e893-4c97-8470-2b9d4139d5b2",
+      "filename": "sop-layanan-kegiatan-kemahasiswaan-1719019217-M9d9FPLJg3.pdf",
+      "size_bytes": 219164,
+      "uploaded_at": "2026-06-10T19:32:53.094798",
+      "status": "indexed",
+      "chunks_count": 11
+    },
+    {
+      "id": "22f47beb-25a1-4e18-ac47-82e768956e45",
+      "filename": "sop-layanan-kuliah-kerja-nyata-kkn-1719228386-lNjZDHGBlA.pdf",
+      "size_bytes": 232090,
+      "uploaded_at": "2026-06-10T19:33:05.467295",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "f1b2d5f1-437d-4821-b4ae-1e417a886fa9",
+      "filename": "sop-layanan-legalisir-ijazahtranskrip-nilai-1719020622-Gsbjs51NgG.pdf",
+      "size_bytes": 212609,
+      "uploaded_at": "2026-06-10T19:33:06.000273",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "f44d4662-c7f2-4e04-9730-ba988fc3b619",
+      "filename": "sop-layanan-modifikasi-kartu-rencana-studi-1719228531-mnK2fnOIwF.pdf",
+      "size_bytes": 224926,
+      "uploaded_at": "2026-06-10T19:33:06.386062",
+      "status": "indexed",
+      "chunks_count": 6
+    },
+    {
+      "id": "4ccd022b-d66d-40c0-9b01-2225c08feab6",
+      "filename": "sop-layanan-pemrosesan-kenaikan-jabatan-fungsional-dosen-1719021562-Tw9dwh3c22.pdf",
+      "size_bytes": 261884,
+      "uploaded_at": "2026-06-10T19:33:07.297772",
+      "status": "indexed",
+      "chunks_count": 16
+    },
+    {
+      "id": "2555bdb0-0bf3-462a-9e30-9454917a37fd",
+      "filename": "sop-layanan-penawaran-mata-kuliah-1719021771-T2v0n9mZ04.pdf",
+      "size_bytes": 220987,
+      "uploaded_at": "2026-06-10T19:33:08.053711",
+      "status": "indexed",
+      "chunks_count": 13
+    },
+    {
+      "id": "cbf84d9f-ba2e-4b3d-b140-4a0cefdc0d53",
+      "filename": "sop-layanan-pendataan-mahasiswa-baru-1719021980-FmAVR4peQ3.pdf",
+      "size_bytes": 218147,
+      "uploaded_at": "2026-06-10T19:33:08.530763",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "deb7ff26-6fb7-4c10-8104-c0cd25872a03",
+      "filename": "sop-layanan-penerbitan-sk-penasehat-akademik-1719022736-yuhuFgTjhh.pdf",
+      "size_bytes": 226319,
+      "uploaded_at": "2026-06-10T19:33:09.340092",
+      "status": "indexed",
+      "chunks_count": 13
+    },
+    {
+      "id": "9f9781c2-5a0c-4002-9199-648c1744e4bf",
+      "filename": "sop-layanan-perpanjangan-masa-studi-1719228637-BlQujoq3vj.pdf",
+      "size_bytes": 224294,
+      "uploaded_at": "2026-06-10T19:33:10.072856",
+      "status": "indexed",
+      "chunks_count": 13
+    },
+    {
+      "id": "ceb54c3a-f51c-457d-a01b-4391d70b0612",
+      "filename": "sop-layanan-praktikum-1719023591-YDFIpSKls6.pdf",
+      "size_bytes": 239777,
+      "uploaded_at": "2026-06-10T19:33:10.850226",
+      "status": "indexed",
+      "chunks_count": 11
+    },
+    {
+      "id": "1522a581-37f6-46e6-8a5e-9bcd9d529e05",
+      "filename": "sop-layanan-proses-izin-belajar-dan-tugas-belajar-dosen-1719018977-1tqE63gqAx.pdf",
+      "size_bytes": 200028,
+      "uploaded_at": "2026-06-10T19:33:11.343824",
+      "status": "indexed",
+      "chunks_count": 9
+    },
+    {
+      "id": "d8008c5e-a7c7-4926-996c-3f4143a65754",
+      "filename": "sop-layanan-proses-usul-ujian-dinas-ujian-kenaikan-pangkat-penyesuaian-ijazah-diklat-pim-diklat-teknis-pegawai-1719023742-bU6fwlAx1d.pdf",
+      "size_bytes": 207327,
+      "uploaded_at": "2026-06-10T19:33:11.941039",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "683b69ea-cd5e-4331-a17f-5a1d1fe1a057",
+      "filename": "sop-layanan-semester-pendek-1719023974-dUwTuBDJ6s.pdf",
+      "size_bytes": 190231,
+      "uploaded_at": "2026-06-10T19:33:12.383341",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "ec0aed09-8978-4c13-8761-1a1604361b8b",
+      "filename": "sop-layanan-seminar-proposal-1719228750-ptrXr1ANwI.pdf",
+      "size_bytes": 281150,
+      "uploaded_at": "2026-06-10T19:33:13.486434",
+      "status": "indexed",
+      "chunks_count": 24
+    },
+    {
+      "id": "ac431281-67b2-45c4-bc43-e46b3adc4a35",
+      "filename": "sop-layanan-studi-lanjut-1719024109-BO6BrS8Ynq.pdf",
+      "size_bytes": 249936,
+      "uploaded_at": "2026-06-10T19:33:14.280044",
+      "status": "indexed",
+      "chunks_count": 9
+    },
+    {
+      "id": "8d361274-7910-4b84-b7ea-d74d6bcc1ef0",
+      "filename": "sop-layanan-surat-izin-penelitian-1719024250-KxXdy4yWGS.pdf",
+      "size_bytes": 225818,
+      "uploaded_at": "2026-06-10T19:33:14.698193",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "12efa478-bb02-4876-85e1-701654619e76",
+      "filename": "sop-layanan-surat-keterangan-bebas-akademik-1719024479-mZdaVcUMoH.pdf",
+      "size_bytes": 277978,
+      "uploaded_at": "2026-06-10T19:33:15.394341",
+      "status": "indexed",
+      "chunks_count": 11
+    },
+    {
+      "id": "a39c22b8-a610-4a7c-8127-6c9c79a2ce31",
+      "filename": "sop-layanan-usul-judul-skripsi-1719025057-Or5ao2pyyh.pdf",
+      "size_bytes": 201558,
+      "uploaded_at": "2026-06-10T19:33:15.870008",
+      "status": "indexed",
+      "chunks_count": 7
+    },
+    {
+      "id": "63a92481-2f76-4ef2-a787-c69f55b89fb4",
+      "filename": "sop-layanan-usul-pemberhentian-dan-pemensiunan-pegawai-1719027080-PJQA1BVDuD.pdf",
+      "size_bytes": 207169,
+      "uploaded_at": "2026-06-10T19:33:16.493618",
+      "status": "indexed",
+      "chunks_count": 10
+    },
+    {
+      "id": "1288587c-a4ec-47a6-888e-9b2728ad1373",
+      "filename": "sop-layanan-usulan-pemberian-penghargaan-satyalancana-dan-penghargaan-pegawa-1719028308-CTpC6T89fZ.pdf",
+      "size_bytes": 202934,
+      "uploaded_at": "2026-06-10T19:33:16.945640",
+      "status": "indexed",
+      "chunks_count": 8
+    },
+    {
+      "id": "2dbe2370-6d07-4440-a8e5-b0e67393caff",
+      "filename": "sop-layanan-uts-dan-uas-1719024904-RoxdfhHTSN.pdf",
+      "size_bytes": 251288,
+      "uploaded_at": "2026-06-10T19:33:17.562754",
+      "status": "indexed",
+      "chunks_count": 11
+    },
+    {
+      "id": "52124a5e-e5a0-4f71-b0a7-e968f9223c36",
+      "filename": "sop-layanan-yudisium-1719228857-36keBt7sTQ.pdf",
+      "size_bytes": 241584,
+      "uploaded_at": "2026-06-10T19:33:18.589041",
+      "status": "indexed",
+      "chunks_count": 16
+    },
+    {
+      "id": "07826cb7-f765-4b08-ba4a-010fa129c41f",
+      "filename": "sop-modifikasi-kartu-rencana-studi-krs-1719025333-P4BE0f4P0K.pdf",
+      "size_bytes": 265158,
+      "uploaded_at": "2026-06-10T19:33:18.973725",
+      "status": "indexed",
+      "chunks_count": 8
+    },
+    {
+      "id": "ebde69c1-2085-4ae2-a4c4-4baa7b628c40",
+      "filename": "surat-keputusan-akreditasi-program-studi-biologi-pada-program-sarjana-universitas-halu-oleo-1762407666-9jg9Vf464h.pdf",
+      "size_bytes": 391621,
+      "uploaded_at": "2026-06-10T19:33:24.183909",
+      "status": "indexed",
+      "chunks_count": 7
     }
   ],
-  "total_queries": 16,
-  "last_query_at": "2026-06-04T08:36:29.520901",
+  "total_queries": 19,
+  "last_query_at": "2026-06-10T20:51:38.024235",
   "query_history": [
     {
       "query": "Apa syarat kelulusan cum laude?",
@@ -91,6 +579,18 @@
     {
       "query": "Berapa masa studi maksimal S1?",
       "timestamp": "2026-06-04T08:36:29.520929"
+    },
+    {
+      "query": "apa aktreditas prodi ilmu komputer",
+      "timestamp": "2026-06-10T20:48:43.494845"
+    },
+    {
+      "query": "apa akreditas jurusan kimia ",
+      "timestamp": "2026-06-10T20:49:24.205460"
+    },
+    {
+      "query": "Apa syarat kelulusan program S1?",
+      "timestamp": "2026-06-10T20:51:38.031270"
     }
   ]
 }
