@@ -29,8 +29,14 @@ export default function SettingsPage() {
         setLoading(true)
         setStatus(null)
         try {
+            const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null
+            const headers: HeadersInit = {}
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`
+            }
             const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/clear-knowledge-base`, {
-                method: "POST"
+                method: "POST",
+                headers
             })
             const data = await res.json()
             if (res.ok) {

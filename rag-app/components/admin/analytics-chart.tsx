@@ -33,7 +33,14 @@ export function AnalyticsChart() {
     const fetchAnalytics = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/analytics`)
+            const token = typeof window !== "undefined" ? localStorage.getItem("admin_token") : null
+            const headers: HeadersInit = {}
+            if (token) {
+                headers["Authorization"] = `Bearer ${token}`
+            }
+            const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}/api/analytics`, {
+                headers
+            })
             if (res.ok) {
                 const data = await res.json()
                 setAnalytics(data)
