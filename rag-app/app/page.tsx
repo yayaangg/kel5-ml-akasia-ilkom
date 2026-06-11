@@ -206,7 +206,7 @@ const features = [
 
 const stats = [
     { value: "LLM", label: "AI Powered", icon: Brain },
-    { value: "276", label: "Knowledge Chunks", icon: BookOpen },
+    { value: "1480", label: "Knowledge Chunks", icon: BookOpen },
     { value: "24/7", label: "Selalu Aktif", icon: Clock },
     { value: "<3 dtk", label: "Waktu Respons", icon: Zap }
 ]
